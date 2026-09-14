@@ -1,0 +1,93 @@
+/* 海纳 · 各专业薪资对比 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "SimHei", "黑体", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(180deg, #15508A 0%, #0E2540 45%, #02050D 100%);
+  color: #EAF2FA;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 28px;
+}
+.topbar .back { color: rgba(234,242,250,0.7); text-decoration: none; font-size: 14px; }
+.topbar .back:hover { color: #2FD4DA; }
+.topbar .brand { color: #fff; text-decoration: none; font-size: 20px; font-weight: 700; }
+.topbar .brand .en { font-size: 12px; color: rgba(234,242,250,0.5); margin-left: 6px; font-weight: 400; }
+
+.wrap { max-width: 960px; margin: 0 auto; padding: 10px 24px 60px; }
+
+.title { font-size: 30px; color: #fff; margin: 6px 0 10px; }
+.sub { font-size: 14px; color: rgba(234,242,250,0.7); line-height: 1.7; margin-bottom: 20px; }
+.sub b { color: #2FD4DA; }
+
+.chart { width: 100%; border-radius: 10px; margin: 8px 0 24px; display: block; }
+
+.group-title {
+  font-size: 17px; font-weight: 700; color: #2FD4DA;
+  margin: 24px 0 10px; padding-left: 10px; border-left: 3px solid #2FD4DA;
+}
+
+.table-wrap {
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 10px; overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th {
+  background: #123A5F; color: #2FD4DA; font-weight: 700;
+  padding: 11px 12px; text-align: left;
+}
+td { padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+td.num { color: #9BD3E8; }
+td.salary { color: #F0A96A; font-weight: 600; }
+td a { color: #2FD4DA; text-decoration: none; }
+td a:hover { text-decoration: underline; }
+
+/* 2026-08-24：每行数据说明 */
+tr.row-note td {
+  font-size: 12px;
+  color: rgba(234,242,250,0.6);
+  background: rgba(255,255,255,0.02);
+  padding: 8px 12px 12px;
+  line-height: 1.6;
+}
+
+.note { font-size: 12px; color: rgba(234,242,250,0.5); margin-top: 24px; line-height: 1.7; }
+
+/* 2026-08-24：数据口径警示（海洋技术虚高整改） */
+.salary-warn {
+  margin: 12px 0 4px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(240, 169, 106, 0.10);
+  border: 1px solid rgba(240, 169, 106, 0.35);
+  color: #F0D9B8;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.salary-warn b { color: #F0A96A; }
+
+.global-warn {
+  margin-bottom: 20px;
+  padding: 13px 16px;
+  border-radius: 8px;
+  background: rgba(240, 169, 106, 0.10);
+  border: 1px solid rgba(240, 169, 106, 0.35);
+  color: #F0D9B8;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.global-warn b { color: #F0A96A; }
+
+@media (max-width: 720px) {
+  .wrap { padding: 10px 14px 50px; }
+  .title { font-size: 24px; }
+  table { font-size: 12px; }
+  th, td { padding: 8px 8px; }
+}

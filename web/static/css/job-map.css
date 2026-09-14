@@ -1,0 +1,93 @@
+/* 海纳 · 岗位对应表（job-map.css） */
+.job-map-body {
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  background: linear-gradient(180deg, #ffffff 0%, #B2EEFF 100%);
+  color: #1a2a3a;
+  height: calc(100vh - 71px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.job-map-topbar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 32px; background: rgba(255,255,255,0.6);
+  border-bottom: 1px solid rgba(66,153,224,0.2); flex-shrink: 0;
+}
+.job-map-topbar .title { font-size: 15px; font-weight: 600; color: #1a2a3a; }
+.job-map-topbar .label { font-size: 13px; color: #4299E0; }
+#majorSelect {
+  font-size: 14px; padding: 7px 12px; border: 1px solid #4299E0; border-radius: 8px;
+  background: #fff; color: #1a2a3a; cursor: pointer; outline: none;
+}
+.job-map-main { display: flex; flex: 1; overflow: hidden; position: relative; }
+.job-map-tree-area { flex: 1; padding: 32px; position: relative; overflow: auto; transition: flex 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.job-map-tree-title { font-size: 13px; color: #4299E0; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px; }
+#treeSvg { display: block; margin: 0 auto; transition: margin 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.job-map-node { cursor: pointer; }
+.job-map-node rect { transition: fill 0.2s, stroke 0.2s, opacity 0.3s; }
+.job-map-node { transition: opacity 0.3s; }
+.job-map-node.dimmed { opacity: 0.35; }
+.job-map-node text { font-size: 13px; fill: #1a2a3a; pointer-events: none; }
+.job-map-node.root rect { fill: #4299E0; }
+.job-map-node.root text { fill: #fff; font-weight: 600; font-size: 15px; }
+.job-map-node.job rect { fill: #fff; stroke: #4299E0; }
+.job-map-node.skill rect { fill: #E8F7FF; stroke: #B2EEFF; }
+.job-map-node.skill text { fill: #4299E0; }
+.job-map-node:hover rect { stroke: #D82036; }
+.job-map-node.skill:hover rect { fill: #FFF5E0; stroke: #F2D143; }
+.job-map-node.skill:hover text { fill: #D82036; }
+.job-map-node.active rect { stroke: #D82036; fill: #FFF0F0; }
+.job-map-link { stroke: #4299E0; stroke-width: 1.5; fill: none; opacity: 0.5; }
+.job-map-link.level1 { stroke: #4299E0; stroke-width: 2; opacity: 0.8; }
+
+.job-map-detail {
+  width: 0; padding: 32px 0; overflow: hidden;
+  overflow-y: auto;
+  position: relative;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: normal;
+}
+.job-map-detail.open { width: 420px; padding: 32px; }
+.job-map-detail .index {
+  font-size: 11px; color: #4299E0; letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  padding-bottom: 12px; border-bottom: 1px dashed #4299E0;
+}
+.job-map-detail .index::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #4299E0; }
+.job-map-detail h2 { font-size: 19px; font-weight: 600; margin-bottom: 6px; color: #1a2a3a; }
+.job-map-detail .sub { font-size: 13px; color: #4299E0; margin-bottom: 16px; }
+.job-map-detail .desc { font-size: 14px; line-height: 1.7; color: #4a5a6a; margin-bottom: 20px; }
+.job-map-detail .path-title {
+  font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #4299E0;
+  margin-bottom: 12px; padding-top: 16px; border-top: 1px dashed #4299E0;
+}
+.job-map-detail .path-step { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: #1a2a3a; line-height: 1.6; }
+.job-map-detail .path-num {
+  width: 22px; height: 22px; border-radius: 50%; background: #4299E0; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-top: 2px;
+}
+.job-map-detail .resume-item { display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; color: #1a2a3a; line-height: 1.6; }
+.job-map-detail .resume-label {
+  flex-shrink: 0; width: 64px; height: 22px; border-radius: 4px; background: #E8F7FF; color: #4299E0;
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-top: 2px;
+}
+.job-map-detail .resume-val { flex: 1; }
+.job-map-detail .src { font-size: 11px; color: #8a9aaa; margin-top: 20px; padding-top: 12px; border-top: 1px dashed #4299E0; }
+.job-map-detail .placeholder { color: #8a9aaa; font-size: 14px; }
+
+/* 详情栏关闭按钮（右上角 ×） */
+.job-map-close {
+  position: absolute; top: 20px; right: 20px;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid rgba(66,153,224,0.3);
+  background: #fff; color: #4299E0;
+  font-size: 18px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.3s;
+  z-index: 6;
+  opacity: 0; pointer-events: none;
+}
+.job-map-close.show { opacity: 1; pointer-events: auto; }
+.job-map-close:hover {
+  background: #4299E0; color: #fff; border-color: #4299E0;
+}

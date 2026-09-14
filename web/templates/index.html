@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海纳英才 · 海洋知识平台</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="/static/css/style.css?v=20260905">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/auth.css">
+<link rel="stylesheet" href="/static/css/transfer-map.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="stylesheet" href="/static/css/animations.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+<script type="importmap">
+{
+  "imports": {
+    "three": "/static/vendor/three/three.module.min.js",
+    "GLTFLoader": "/static/vendor/three/GLTFLoader.js",
+    "EXRLoader": "/static/vendor/three/EXRLoader.js",
+    "EffectComposer": "/static/vendor/three/postprocessing/EffectComposer.js",
+    "RenderPass": "/static/vendor/three/postprocessing/RenderPass.js",
+    "ShaderPass": "/static/vendor/three/postprocessing/ShaderPass.js",
+    "BokehPass": "/static/vendor/three/postprocessing/BokehPass.js",
+    "UnrealBloomPass": "/static/vendor/three/postprocessing/UnrealBloomPass.js",
+    "OutputPass": "/static/vendor/three/postprocessing/OutputPass.js"
+  }
+}
+</script>
+<script type="module" src="/static/js/three-loader.js"></script>
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg" id="oceanBg"></div>
+
+<!-- ======== 顶层：3D 写实海洋 Hero（独立首页，仅 hero，天然不可下滑；点击下潜跳转内容页） ======== -->
+<header class="hero" id="hero" data-od-id="hero">
+<nav class="nav" data-od-id="hero-nav">
+  <a class="brand-logo" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">HAINA</span></span>
+  </a>
+  <button class="nav-burger" id="navBurger" aria-label="打开菜单" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links" id="navLinks">
+    <a href="/content#jobs" class="nav-jobs">岗位库</a>
+    <a href="/content#news">动态</a>
+    <a href="/ocean">海域图鉴</a>
+    <a href="/ocean-data">数据资源池</a>
+    <a href="/content#transfer">转行</a>
+    <a href="/content#abyss">深海</a>
+  </div>
+  <button class="nav-perf" id="navPerf" aria-label="性能设置">性能</button>
+  <button id="authBtn" class="topbar-auth" style="display:none">登录</button>
+</nav>
+
+  <!-- 3D 海洋背景（无 WebGL / reduced-motion / 加载失败时静默回退到 CSS 渐变，不阻塞页面） -->
+  <canvas id="oceanCanvas" class="ocean-canvas" aria-hidden="true"></canvas>
+
+  <div class="hero-inner" data-od-id="hero-content">
+    <h1 class="hero-title">
+      <span class="hero-line hero-brand">海纳英才</span>
+      <span class="hero-line">海洋人的</span>
+      <span class="hero-line"><span class="hero-boxed">信息主场<svg class="hero-cursor" width="28" height="28" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M5 3l14 8-6 2-2 6-6-16z"/></svg></span></span>
+    </h1>
+    <p class="hero-sub">海纳英才，学业有伴</p>
+
+    <form class="hero-search" action="/search" method="get" role="search" data-od-id="hero-search">
+      <input type="search" name="q" class="hero-search-input" placeholder="搜索岗位 / 公司 / 海域关键词" aria-label="搜索岗位、公司或海域">
+      <button type="submit" class="hero-search-btn" data-od-id="hero-cta">开始探索</button>
+    </form>
+
+    <p class="hero-proof">已有 <b id="statJobs">137</b> 在招岗位 · <b id="statNews">313</b> 条权威动态</p>
+    <a class="hero-quiz-link" href="/quiz" data-od-id="hero-quiz-link">拿不准心里怎么想？来测测适合你的路！</a>
+  </div>
+
+  <!-- ↓ 下潜指示器：点击后 hero 顶上去（上移滑出），然后跳转内容页 -->
+  <a href="/content" class="hero-dive" id="heroDive" data-od-id="hero-dive" aria-label="下潜，进入内容页">
+    <span class="dive-arrow">↓</span>
+    <span>开始下潜探索</span>
+  </a>
+</header>
+
+<!-- 登录/注册弹窗（全站共用） -->
+<div class="auth-modal" id="authModal" style="display:none">
+  <div class="auth-box">
+    <h2 id="authTitle">登录</h2>
+    <input type="text" id="authUsername" class="auth-input" placeholder="用户名（2-20 字符）" autocomplete="username">
+    <input type="password" id="authPassword" class="auth-input" placeholder="密码（至少 6 位）" autocomplete="current-password">
+    <input type="password" id="authPassword2" class="auth-input" placeholder="确认密码（再输一遍）" autocomplete="new-password" style="display:none;">
+    <div class="auth-actions">
+      <button id="authSubmit" class="auth-submit">登录</button>
+      <button id="authToggle" class="auth-cancel">去注册</button>
+    </div>
+    <a id="authForgot" class="auth-forgot" href="javascript:;" style="display:none;">忘记密码？</a>
+  </div>
+</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script defer src="/static/js/auth.js"></script>
+<script defer src="/static/js/app.js"></script>
+<script defer src="/static/js/animations.js"></script>
+<script defer src="/static/js/dive-transition.js"></script>
+{% include "_feedback.html" %}
+<!-- 2026-08-24：性能模式选择弹窗（公共模板，导航栏「性能」按钮可随时打开） -->
+{% include "_perf_modal.html" %}
+<script defer src="/static/js/perf-mode.js"></script>
+</body>
+</html>

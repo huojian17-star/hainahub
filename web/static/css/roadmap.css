@@ -1,0 +1,110 @@
+/* 转行路线图 v3：交互式关系网络（SVG 形状 + 状态机 + 右侧详情卡片，深色主题） */
+.rm-app { position: relative; height: calc(100vh - 60px); min-height: 560px; }
+
+/* 地图（SVG 网络） */
+.rm-map {
+  position: absolute;
+  inset: 0;
+  animation: rmMapIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rmMapIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: none; }
+}
+#rmSvg { display: block; width: 100%; height: 100%; }
+
+/* 连线 */
+.rm-link { stroke: rgba(255, 255, 255, 0.16); stroke-width: 1; stroke-dasharray: 4 4; }
+.rm-node[data-state="active"] ~ .rm-link { stroke: rgba(47, 212, 218, 0.35); }
+
+/* 节点 */
+.rm-node { cursor: pointer; }
+.rm-node:focus { outline: none; }
+.rm-shape {
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 1;
+  transition: fill 200ms, stroke 200ms, opacity 200ms, transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rm-node:hover .rm-shape { transform: scale(1.18); }
+
+.rm-node[data-state="muted"] .rm-shape { opacity: 0.22; }
+.rm-node[data-state="muted"] .rm-label { opacity: 0.32; }
+.rm-node[data-state="active"] .rm-shape { fill: #2FD4DA; stroke: #2FD4DA; }
+.rm-node[data-type="home"] .rm-shape { fill: #2FD4DA; stroke: #2FD4DA; }
+.rm-node[data-state="active"] .rm-label { fill: #2FD4DA; font-weight: 600; }
+
+.rm-label {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 11px;
+  fill: #fff;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 200ms, fill 200ms;
+}
+.rm-sub { font-size: 10px; fill: rgba(255, 255, 255, 0.5); }
+
+/* 右侧详情卡片 */
+.rm-page {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 340px;
+  z-index: 3;
+}
+.rm-card {
+  background: rgba(10, 30, 52, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 22px 24px;
+  animation: rmCardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rmCardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.rm-card-title { font-size: 18px; color: #fff; font-weight: 600; margin-bottom: 6px; }
+.rm-card-type {
+  display: inline-block;
+  font-size: 12px;
+  color: #2FD4DA;
+  margin-bottom: 12px;
+}
+.rm-card-body { font-size: 13px; color: rgba(255, 255, 255, 0.75); line-height: 1.7; }
+.rm-tab-desc { margin-bottom: 12px; }
+.rm-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.rm-list li { display: flex; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.rm-list li:last-child { border-bottom: none; }
+.rm-list b { flex: 0 0 42px; color: rgba(255, 255, 255, 0.5); font-weight: 600; font-size: 12px; }
+.rm-list span { flex: 1; color: rgba(255, 255, 255, 0.82); }
+
+/* 图例 */
+.rm-legend {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  z-index: 3;
+}
+.rm-legend span { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+.rm-legend-hint { margin-left: 10px; color: rgba(255, 255, 255, 0.4) !important; }
+.lg { display: inline-block; width: 11px; height: 11px; }
+.lg-tri { clip-path: polygon(50% 0, 0 100%, 100% 100%); background: #fff; }
+.lg-sq { background: #fff; }
+.lg-dot { border-radius: 50%; background: #fff; }
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .rm-page { right: 12px; left: 12px; width: auto; top: auto; bottom: 12px; transform: none; }
+  .rm-card { padding: 16px 18px; }
+  .rm-card-title { font-size: 16px; }
+  .rm-legend { bottom: auto; top: 12px; }
+}

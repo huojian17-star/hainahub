@@ -1,0 +1,25 @@
+<!-- 2026-08-24：性能模式选择弹窗（公共模板，首页/content 共用）。首次进入自动弹 + 导航栏「性能」按钮可随时打开 -->
+<div class="perf-modal" id="perfModal" role="dialog" aria-modal="true" aria-label="选择显示模式">
+  <div class="perf-modal-box">
+    <h3 class="perf-modal-title">这台电脑跑得动吗？</h3>
+    <p class="perf-modal-sub">往下潜会看到游动的鱼群、发光的水母和鲸鱼，这些 3D 场景有点吃配置，选个合适的。</p>
+    <div class="perf-options">
+      <button class="perf-option perf-option-active" data-mode="performance" id="perfOptionPerf">
+        <span class="perf-opt-name">性能优先</span>
+        <span class="perf-opt-desc">做了最大程度优化，普通电脑也能流畅看。</span>
+      </button>
+      <button class="perf-option" data-mode="quality" id="perfOptionQuality">
+        <span class="perf-opt-name">画质优先</span>
+        <span class="perf-opt-desc">3D 细节全开，适合配置好的电脑。</span>
+      </button>
+      <button class="perf-option" data-mode="lite" id="perfOptionLite">
+        <span class="perf-opt-name">极简优先</span>
+        <span class="perf-opt-desc">不加载 3D 和动画，网慢也能快速看内容。</span>
+      </button>
+    </div>
+    <label class="perf-remember">
+      <input type="checkbox" id="perfRemember"> 下次别问了
+    </label>
+    <button class="perf-confirm" id="perfConfirm">就用这个</button>
+  </div>
+</div>

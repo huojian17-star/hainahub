@@ -1,0 +1,64 @@
+/* 考证·实习·转方向指南 */
+.guide-wrap { max-width: 860px; margin: 0 auto; padding: 60px 20px 80px; }
+.guide-head { margin-bottom: 40px; }
+.guide-head h1 { font-size: 28px; color: #fff; margin-bottom: 12px; }
+.guide-sub { font-size: 14px; color: rgba(255, 255, 255, 0.65); line-height: 1.7; }
+
+.guide-section { padding: 26px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.10); }
+.guide-section:last-of-type { border-bottom: none; }
+.guide-name { font-size: 20px; color: #2FD4DA; margin-bottom: 16px; padding-left: 10px; border-left: 3px solid #2FD4DA; }
+
+.guide-block { margin-bottom: 16px; }
+.guide-h { font-size: 13px; color: rgba(255, 255, 255, 0.5); font-weight: 600; margin-bottom: 8px; }
+
+.guide-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.guide-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+.cert-name { color: #fff; font-weight: 600; font-size: 15px; }
+.cert-cond { color: rgba(255, 255, 255, 0.62); font-size: 13px; }
+.cert-link { color: #2FD4DA; font-size: 13px; text-decoration: none; }
+.cert-link:hover { text-decoration: underline; }
+
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  padding: 5px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+}
+.tag-teal { background: rgba(47, 212, 218, 0.12); border-color: rgba(47, 212, 218, 0.3); color: #7CE7EA; }
+
+.guide-foot { margin-top: 30px; font-size: 12px; color: rgba(255, 255, 255, 0.55); line-height: 1.6; }
+
+/* 列表页：专业名做成可点击入口 */
+.guide-name-link { text-decoration: none; color: #2FD4DA; }
+.guide-name-link:hover { text-decoration: underline; }
+
+/* 详情页 */
+.detail-section { padding: 26px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.10); }
+.detail-section:last-of-type { border-bottom: none; }
+.detail-h { font-size: 15px; color: #2FD4DA; margin-bottom: 16px; padding-left: 10px; border-left: 3px solid #2FD4DA; }
+
+.cert-card {
+  padding: 18px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.cert-title { font-size: 17px; color: #fff; margin-bottom: 12px; }
+.cert-dl { display: flex; flex-direction: column; gap: 8px; }
+.cert-row { display: flex; gap: 12px; align-items: baseline; }
+.cert-row dt {
+  flex: 0 0 62px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+}
+.cert-row dd { flex: 1; font-size: 14px; color: rgba(255, 255, 255, 0.85); line-height: 1.6; }
+.cert-card .cert-link { margin-top: 10px; display: inline-block; }
+
+.plain-item { padding: 10px 0; }
+.plain-name { font-size: 15px; color: #fff; font-weight: 600; margin-bottom: 4px; }
+.plain-detail { font-size: 14px; color: rgba(255, 255, 255, 0.7); line-height: 1.7; }

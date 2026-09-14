@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ job.title }} - 海纳英才岗位</title>
+<link rel="stylesheet" href="/static/css/article.css">
+<style>
+  .job-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+  .job-unit { font-size: 15px; color: rgba(234,242,250,0.85); }
+  .jbadge {
+    font-size: 12px; padding: 3px 12px; border-radius: 4px;
+    background: #123A5F; color: #9BD3E8; white-space: nowrap;
+  }
+  .job-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .jtagg {
+    font-size: 12px; padding: 3px 12px; border-radius: 4px;
+    background: rgba(47,212,218,0.14); color: #2FD4DA;
+  }
+  .job-fields {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px 20px; margin-top: 22px; padding: 16px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 8px;
+  }
+  .field { display: flex; flex-direction: column; gap: 2px; }
+  .field .k { font-size: 12px; color: rgba(234,242,250,0.5); }
+  .field .v { font-size: 15px; color: #EAF2FA; }
+  .field .v.salary { color: #9BD3E8; }
+  .field .v.deadline { color: #F0A96A; }
+  .field .v.deadline-note { color: #D9B86A; }
+  .field .v.deadline-unknown { color: #F0604A; font-weight: 600; }
+  .job-salary {
+    margin-top: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    padding: 12px 16px;
+    background: rgba(47, 212, 218, 0.06);
+    border: 1px solid rgba(47, 212, 218, 0.15);
+    border-radius: 8px;
+  }
+  .job-salary .k { font-size: 12px; color: rgba(234,242,250,0.5); white-space: nowrap; }
+  .job-salary .v.salary { font-size: 14px; color: #9BD3E8; line-height: 1.7; }
+  .job-desc {
+    margin-top: 20px; font-size: 15px; line-height: 1.8;
+    color: rgba(234,242,250,0.82); white-space: pre-wrap;
+  }
+</style>
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg" id="oceanBg"></div>
+
+<main class="wrap">
+  <header class="article-head">
+    <a class="back" href="/jobs">← 返回岗位库</a>
+    <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+      <span class="logo-mark">{% include "_logo_white.html" %}</span>
+      <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+    </a>
+  </header>
+
+  <article class="article">
+    <h1 class="title">{{ job.title }}</h1>
+
+    <div class="job-meta">
+      {% if job.unit %}<span class="job-unit">{{ job.unit }}</span>{% endif %}
+      {% if job.unit_type %}<span class="jbadge">{{ job.unit_type }}</span>{% endif %}
+    </div>
+
+    {% set majors = job.major.split(',') if job.major else [] %}
+    {% if majors %}
+    <div class="job-tags">
+      {% for m in majors %}{% if m.strip() %}<span class="jtagg">{{ m.strip() }}</span>{% endif %}{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="job-fields">
+      {% if job.education %}<div class="field"><span class="k">学历</span><span class="v">{{ job.education }}</span></div>{% endif %}
+      {% if job.region %}<div class="field"><span class="k">地点</span><span class="v">{{ job.region }}</span></div>{% endif %}
+      {% if job.headcount %}<div class="field"><span class="k">人数</span><span class="v">{{ job.headcount }}</span></div>{% endif %}
+      {% if job.deadline %}<div class="field"><span class="k">截止</span><span class="v deadline">{{ job.deadline }}</span></div>{% elif job.deadline_note %}<div class="field"><span class="k">截止</span><span class="v deadline-note">{{ job.deadline_note }}</span></div>{% else %}<div class="field"><span class="k">截止</span><span class="v deadline-unknown">截止日期未注明</span></div>{% endif %}
+    </div>
+
+    {% if job.salary %}<div class="job-salary"><span class="k">待遇</span><span class="v salary">{{ job.salary }}</span></div>{% endif %}
+
+    {% if job.description %}<div class="job-desc">{{ job.description }}</div>{% endif %}
+
+    <div class="actions">
+      <a class="btn-origin" href="{{ job.url }}" target="_blank" rel="noopener">查看原文 / 申请 →</a>
+    </div>
+  </article>
+
+</main>
+{% include "_feedback.html" %}
+</body>
+</html>

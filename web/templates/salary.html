@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>各专业薪资对比 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/salary.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<header class="topbar">
+  <a class="back" href="/content#transfer">← 返回转行</a>
+  <a class="brand" href="/">海纳英才<span class="en">Haina</span></a>
+</header>
+
+<main class="wrap">
+  <h1 class="title">各专业薪资对比</h1>
+  <p class="sub">数据来自<b>高校就业质量报告 + 麦可思《中国本科生就业报告》</b>（应届本科毕业半年后月收入），比招聘平台"可从事岗位"口径更贴近真实。重点看<b>主薪资区间</b>和<b>应届起薪</b>两列；点专业名可看数据来源。</p>
+
+  <div class="global-warn"><b>重要提醒：</b>海洋相关专业（监测、海域论证、环评、数值模拟、水产等）应届起薪普遍在 <b>4-8K/月</b>，其中航海/轮机专业海上方向（有船补）明显高于陆上方向。全国本科应届平均月收入 <b>6199 元</b>（麦可思 2024 届），近六成在 6000 元以下、破万不足一成。下表为应届均值，供参考。</div>
+
+  <img class="chart" src="/static/img/chart_salary_majors.png" alt="各专业应届生工资对比">
+  <p class="note" style="margin-top:-14px;margin-bottom:20px;">注：图为各专业应届本科毕业半年后月收入（K/月），数据来自高校就业报告与麦可思，详见下方表格与文末来源列表。</p>
+
+  <div class="group-title">海洋相关专业</div>
+  <div class="table-wrap" id="marineTable"></div>
+
+  <div class="group-title">转行常见方向</div>
+  <div class="table-wrap" id="otherTable"></div>
+
+  <p class="note">数据来源：海洋相关专业来自<b>高校就业质量报告</b>（中国海洋大学、上海海洋大学等）与<b>行业数据</b>（船舶行业网、船员市场）；转行方向专业来自<b>麦可思《中国本科生就业报告》</b>（2023/2024届本科毕业半年后月收入，全国样本14万+）。点表格里专业名可看来源链接。<br>数据更新时间：2026-08-24。薪资随地区、学历、经验浮动，仅供参考；航海/轮机等海上方向专业薪资含船补，与陆上方向差异大。</p>
+
+  <div class="group-title">各专业数据来源</div>
+  <div class="note" style="line-height:2;">
+    <b>海洋相关专业：</b><br>
+    · 海洋科学：<a href="https://www.gaosan.com/gaokao/692296.html" target="_blank" rel="noopener">中国海洋大学就业数据（高三网整理）↗</a>、<a href="https://m.gaokao.cn/zd/244351" target="_blank" rel="noopener">掌上高考↗</a><br>
+    · 海洋技术：<a href="http://www.gaosan.com/gaokao/779022.html" target="_blank" rel="noopener">高校就业报告（高三网整理）↗</a><br>
+    · 船舶与海洋工程：<a href="http://www.cnss.net/gongzi/33903/" target="_blank" rel="noopener">船舶行业数据（cnss）↗</a><br>
+    · 航海技术：<a href="http://www.86gaokao.com/html/1/1493.html" target="_blank" rel="noopener">高校就业数据↗</a>、<a href="http://www.crewchina.com/SSPI_V_dbaci.html" target="_blank" rel="noopener">船员市场行情↗</a><br>
+    · 轮机工程：<a href="https://collegedata.com.cn/lun-ji-gong-cheng-081804k-gao-kao-zhi-yuan-tian-bao-zhi-nan/" target="_blank" rel="noopener">collegedata↗</a>、<a href="http://www.crewchina.com/SSPI_V_dbaci.html" target="_blank" rel="noopener">船员市场行情↗</a><br>
+    · 海洋渔业科学与技术：<a href="https://www.gaosan.com/gaokao/692296.html" target="_blank" rel="noopener">中国海洋大学就业数据（高三网整理）↗</a><br>
+    <b>转行方向专业：</b><br>
+    · 计算机/电子信息/电气/金融/会计/财务/行政/汉语言/法学/市场/临床/护理/教育等：<a href="https://www.yicai.com/news/102662440.html" target="_blank" rel="noopener">麦可思《2025年中国本科生就业报告》报道（第一财经）↗</a>、<a href="https://www.tfcaijing.com/article/page/4c6c665163665362544376464c443168506372684a513d3d" target="_blank" rel="noopener">麦可思高薪专业报道（时代财经）↗</a>
+  </div>
+</main>
+
+<script src="/static/js/salary.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

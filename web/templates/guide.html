@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>考证·实习·转方向指南 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/guide.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/content">← 首页</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">考证·实习·转方向</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="wrap guide-wrap">
+  <div class="guide-head">
+    <h1>海洋人能考什么证、去哪实习、往哪转</h1>
+    <p class="guide-sub">按专业分，每块列出能考的证（含报考门槛）、常见的实习去向、以及可转的方向。证书门槛和来源都标注了官方文件，点链接可核。</p>
+  </div>
+
+  {% for m in majors %}
+  <section class="guide-section">
+    <h2 class="guide-name"><a class="guide-name-link" href="/guide/{{ m.id }}">{{ m.name }}</a></h2>
+
+    <div class="guide-block">
+      <h3 class="guide-h">能考的证</h3>
+      <ul class="guide-list">
+        {% for c in m.certs %}
+        <li class="guide-item">
+          <span class="cert-name">{{ c.name }}</span>
+          <span class="cert-cond">{{ c.cond }}</span>
+          <a class="cert-link" href="{{ c.url }}" target="_blank" rel="noopener">官方文件 ↗</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="guide-block">
+      <h3 class="guide-h">能实习的领域</h3>
+      <div class="tag-list">
+        {% for it in m.internships %}
+        <span class="tag">{{ it.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="guide-block">
+      <h3 class="guide-h">能转的方向</h3>
+      <div class="tag-list">
+        {% for t in m.transfers %}
+        <span class="tag tag-teal">{{ t.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endfor %}
+
+  <p class="guide-foot">内容来源：交通运输部、海事局、人力资源社会保障部门公开的执业资格考试文件，以及各高校海洋类专业培养方案。整理时间 2026-08。</p>
+</main>
+{% include "_feedback.html" %}
+</body>
+</html>

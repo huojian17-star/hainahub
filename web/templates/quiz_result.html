@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>你的分析报告 - 海纳英才</title>
+  <link rel="stylesheet" href="/static/css/quiz_result.css">
+{% include "_analytics.html" %}
+</head>
+<body>
+  <header class="qr-top">
+    <a class="qr-home" href="/content">← 回首页</a>
+    <div class="qr-brand"><span class="qr-logo">海纳英才</span><span class="qr-sub">HAINA</span></div>
+    <span class="qr-top-tag">摸清你的路 · 分析报告</span>
+  </header>
+
+  <main class="qr-main">
+    <!-- 结论横幅 -->
+    <section class="qr-verdict">
+      <div class="qr-verdict-label">你的方向</div>
+      <div class="qr-verdict-row">
+        主攻 <b id="resTop">—</b>
+        <span class="qr-vsep">·</span>
+        备选 <b id="resAlt">—</b>
+      </div>
+      <div class="qr-verdict-sub">下面说明为什么，以及你该怎么起步。</div>
+    </section>
+
+    <!-- 雷达图 -->
+    <section class="qr-card">
+      <h2 class="qr-card-title">兴趣画像</h2>
+      <div id="radarBox" class="qr-radar"></div>
+      <div id="radarCaption" class="qr-radar-cap"></div>
+    </section>
+
+    <!-- 画像 -->
+    <section class="qr-card qr-portrait">
+      <h2 class="qr-card-title">职业倾向画像</h2>
+      <div id="portraitText" class="qr-article"></div>
+    </section>
+
+    <!-- 主推 -->
+    <section class="qr-card qr-card-top">
+      <div class="qr-card-head"><b id="topName"></b><span id="topTag" class="qr-tag"></span></div>
+      <div id="topText" class="qr-article"></div>
+    </section>
+
+    <!-- 备选 -->
+    <section class="qr-card">
+      <div class="qr-card-head"><b id="altName"></b><span id="altTag" class="qr-tag"></span></div>
+      <div id="altText" class="qr-article"></div>
+    </section>
+
+    <!-- 短板 -->
+    <section class="qr-card qr-gap">
+      <h2 class="qr-card-title">短板与下一步</h2>
+      <div id="gapText" class="qr-article"></div>
+      <div class="qr-gap-tip">想看这条路有哪些真实岗位，去首页「转行出路图谱」点对应节点，或直接搜岗位库。</div>
+    </section>
+
+    <button id="retestBtn" class="qr-retest">重新测试</button>
+  </main>
+
+  <script src="/static/js/quiz_result.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

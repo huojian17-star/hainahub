@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人主页 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/profile.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg" id="oceanBg"></div>
+
+<main class="wrap">
+  <header class="profile-head">
+    <a class="back" href="/content">← 返回首页</a>
+    <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+      <span class="logo-mark">{% include "_logo_white.html" %}</span>
+      <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+    </a>
+  </header>
+
+  <section class="profile-card">
+    <div class="profile-avatar">
+      <img id="avatarImg" src="" alt="头像" style="display:none;">
+      <span id="avatarFallback" class="avatar-fallback">海</span>
+      <button id="changeAvatar" class="avatar-change">换头像</button>
+      <input type="file" id="avatarFile" accept="image/*" style="display:none;">
+    </div>
+    <div class="profile-info">
+      <h1 id="profileName">…</h1>
+      <p class="profile-meta" id="profileMeta"></p>
+      <p class="profile-bio" id="profileBio">这个人还没写简介</p>
+      <button id="editBio" class="btn-ghost">编辑简介</button>
+    </div>
+  </section>
+
+  <div id="bioEditor" class="bio-editor" style="display:none;">
+    <textarea id="bioInput" rows="3" maxlength="200" placeholder="写点自我介绍（最多 200 字）"></textarea>
+    <div class="bio-actions">
+      <button id="bioSave" class="btn-solid">保存</button>
+      <button id="bioCancel" class="btn-ghost">取消</button>
+    </div>
+  </div>
+
+  <section class="profile-section">
+    <h2>我的作品</h2>
+    <div id="postList" class="post-grid"></div>
+  </section>
+
+  <section class="profile-section">
+    <h2>我的评论</h2>
+    <div id="commentList" class="comment-list"></div>
+  </section>
+
+  <div class="profile-footer">
+    <button id="logoutBtn" class="btn-danger">退出登录</button>
+  </div>
+</main>
+
+<script src="/static/js/profile.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

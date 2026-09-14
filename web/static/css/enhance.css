@@ -1,0 +1,254 @@
+/* 海纳 · 暗色设计增强层 v3
+   去玻璃拟态 / 渐变字 / 径向光晕 / shine扫光 / hover上浮+重阴影
+   单一青色 accent · 发丝边框 · 明度分层 · 干净悬停 · 焦点环 · 减动效
+   被 7 个页面加载：index(非hero段) / article / jobs / news / ocean / salary / transfer */
+
+:root {
+  /* 表面层级（明度分层代替阴影） */
+  --surface-base: #0B1D33;
+  --surface-card: #12283F;
+  --surface-elevated: #1A3552;
+  --surface-overlay: #234466;
+
+  /* 单一强调色（暗底优化青） */
+  --accent: #38E5EC;
+  --accent-soft: rgba(56, 229, 236, 0.14);
+
+  /* 文字层级 */
+  --fg: #EAF6FB;
+  --fg-muted: rgba(234, 246, 251, 0.62);
+  --fg-faint: rgba(234, 246, 251, 0.38);
+
+  /* 发丝边框 */
+  --border: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  /* 动效 */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============ 通用区块标题 ============ */
+.zone-title {
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.02em;
+}
+.zone-title::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* ============ 资讯卡片 ============ */
+.news-card {
+  position: relative;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  transition: border-color .25s var(--ease-out), background .25s var(--ease-out);
+}
+.news-card:hover {
+  background: var(--surface-card);
+  border-color: var(--border-strong);
+}
+.news-card.featured {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+}
+.news-thumb { overflow: hidden; border-radius: 8px; }
+.news-thumb img { transition: transform .5s var(--ease-out); }
+.news-card:hover .news-thumb img { transform: scale(1.04); }
+
+/* 筛选标签过渡（主结构由 news.css 控制） */
+.filter-btn {
+  transition: color .2s var(--ease-out), background .2s var(--ease-out);
+}
+
+/* ============ 岗位卡片（首页 + 岗位库 JS 生成） ============ */
+.home-job-card {
+  display: block;
+  padding: 16px 4px;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  transition: border-color .2s;
+}
+.home-job-card:hover {
+  border-bottom-color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+}
+.jtag {
+  background: var(--accent-soft);
+  border: 1px solid rgba(56, 229, 236, 0.22);
+}
+
+/* ============ 转行出路数据看板 ============ */
+.dash-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  transition: border-color .25s var(--ease-out);
+}
+.dash-card:hover { border-color: var(--border-strong); }
+
+.dash-title {
+  padding-left: 14px;
+  border-left: 2px solid var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.bar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  height: 16px;
+}
+.bar-fill {
+  background: var(--accent);
+  border-radius: 8px;
+  position: relative;
+  transition: width .9s var(--ease-out);
+}
+.bar-val {
+  color: var(--fg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-expand {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  transition: border-color .2s var(--ease-out), background .2s var(--ease-out);
+}
+.dash-expand:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.dash-expand:active { transform: scale(0.98); }
+
+.stat-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color .25s var(--ease-out);
+}
+.stat-card:hover { border-color: var(--border-strong); }
+.stat-card b {
+  color: var(--accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ 表格 ============ */
+.dash-table { border-radius: 12px; overflow: hidden; }
+.dash-table th {
+  background: var(--surface-elevated);
+  color: var(--accent);
+  font-weight: 600;
+}
+.dash-table tr { transition: background .2s; }
+.dash-table tr:hover { background: rgba(255, 255, 255, 0.04); }
+
+/* ============ 加载更多 ============ */
+.load-more {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  transition: border-color .25s var(--ease-out), color .25s var(--ease-out);
+}
+.load-more:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.load-more:active { transform: scale(0.98); }
+
+/* ============ 社区入口卡片 ============ */
+.comm-card {
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  transition: border-color .25s var(--ease-out), background .25s var(--ease-out);
+}
+.comm-card:hover {
+  background: var(--surface-card);
+  border-color: var(--border-strong);
+}
+
+/* ============ 深海区（去光晕脉冲，保留干净容器） ============ */
+.zone-abyss { position: relative; }
+.abyss-glow { display: none; }
+.abyss-title {
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+}
+
+/* ============ 分页控件 ============ */
+.page-btn {
+  border: 1px solid var(--border);
+  background: transparent;
+  transition: border-color .2s var(--ease-out), background .2s var(--ease-out);
+}
+.page-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.page-btn:active:not(:disabled) { transform: scale(0.97); }
+.page-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ============ 文章详情页 ============ */
+.article-body {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.btn-origin {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  transition: border-color .2s var(--ease-out), color .2s var(--ease-out);
+}
+.btn-origin:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-origin:active { transform: scale(0.98); }
+
+/* ============ 登录按钮（与 hero 一致的干净次按钮） ============ */
+.topbar-auth {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: background .2s var(--ease-out);
+}
+.topbar-auth:hover { background: rgba(255, 255, 255, 0.28); }
+.topbar-auth:active { transform: scale(0.97); }
+.topbar-auth:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ============ 选择文本 + 滚动条 ============ */
+::selection { background: rgba(56, 229, 236, 0.30); color: #F0FDFF; }
+/* 2026-08-24：滚动条加宽加对比，避免"看不到滚动条" */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgba(18, 58, 95, 0.25); }
+::-webkit-scrollbar-thumb { background: rgba(56, 229, 236, 0.45); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(56, 229, 236, 0.65); }
+html { scrollbar-width: thin; scrollbar-color: rgba(56, 229, 236, 0.45) rgba(18, 58, 95, 0.25); }
+
+/* ============ 响应式 ============ */
+@media (max-width: 720px) {
+  .news-card.featured { padding: 20px; }
+  .dash-card { padding: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

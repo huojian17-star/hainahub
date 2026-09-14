@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>摸清你的路 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/quiz.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/content">← 首页</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">摸清你的路</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="quiz-wrap">
+  <div class="quiz-stage">
+    <!-- 引路人头像 -->
+    <div class="quiz-guide" id="quizGuide">
+      <span class="quiz-guide-dot">🌊</span>
+      <span class="quiz-guide-name">引路人</span>
+    </div>
+
+    <!-- 对话区 -->
+    <div class="quiz-dialog" id="quizDialog"></div>
+
+    <!-- 选项区 -->
+    <div class="quiz-options" id="quizOptions"></div>
+
+    <!-- 重来 -->
+    <div class="quiz-restart" id="quizRestart" style="display:none;">
+      <button id="restartBtn">再测一次</button>
+    </div>
+  </div>
+</main>
+
+<script src="/static/js/quiz.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

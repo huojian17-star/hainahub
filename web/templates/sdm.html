@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物种分布预测 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/sdm-20260903farm.css?v=20260903farm">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+<!-- 百度统计（hainahub.cn，2026-08-20 接入） -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+ var hm = document.createElement("script");
+ hm.src = "https://hm.baidu.com/hm.js?d3ebc80575d0b318563af6a4506ca90b";
+ var s = document.getElementsByTagName("script")[0]; 
+ s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+<body>
+<header class="topbar">
+  <a class="back" href="/ocean">← 海域图鉴</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">
+<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="lhw-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFE9A6" stop-opacity="0.9"/>
+      <stop offset="55%" stop-color="#FFD06B" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#FFD06B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lhw-beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFE9A6" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFE9A6" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g class="light-beam">
+    <path d="M 120 36 L 60 -8 L 75 -8 L 122 38 Z" fill="url(#lhw-beam)"/>
+    <path d="M 120 36 L 180 -8 L 165 -8 L 118 38 Z" fill="url(#lhw-beam)"/>
+  </g>
+
+  <g class="lighthouse">
+    <path d="M 112 96 L 128 96 L 132 110 L 108 110 Z" fill="#FFFFFF" opacity="0.7"/>
+    <rect x="111" y="40" width="18" height="62" fill="#FFFFFF" rx="2"/>
+    <rect x="111" y="62" width="18" height="6" fill="#3DC7F4" opacity="0.4"/>
+    <rect x="111" y="84" width="18" height="6" fill="#3DC7F4" opacity="0.4"/>
+    <rect x="116" y="70" width="8" height="11" fill="#FFE9A6"/>
+    <rect x="116" y="70" width="8" height="11" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
+    <rect x="108" y="30" width="24" height="12" fill="#FFFFFF" rx="2"/>
+    <circle cx="120" cy="36" r="3.2" fill="#FFEDB5"/>
+    <path d="M 108 30 L 120 14 L 132 30 Z" fill="#FFFFFF"/>
+    <line x1="120" y1="14" x2="120" y2="6" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="120" cy="5" r="2.5" fill="#3DC7F4"/>
+    <g class="lighthouse-glow">
+      <ellipse cx="120" cy="36" rx="36" ry="18" fill="url(#lhw-glow)"/>
+    </g>
+  </g>
+
+  <rect x="46" y="40" width="18" height="68" fill="#FFFFFF" rx="2"/>
+  <rect x="64" y="68" width="47" height="11" fill="#FFFFFF" rx="2"/>
+
+  <g class="star" transform="translate(72, 28)">
+    <path d="M 0 -10 L 2.2 -2.2 L 10 0 L 2.2 2.2 L 0 10 L -2.2 2.2 L -10 0 L -2.2 -2.2 Z" fill="#E6F5FF"/>
+    <circle cx="0" cy="0" r="2" fill="#FFFFFF"/>
+  </g>
+
+  <g class="ocean">
+    <path class="wave wave-back" d="M 0 132 Q 17 122 34 132 T 68 132 T 102 132 T 136 132 T 170 132 T 200 132" stroke="#FFFFFF" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.55"/>
+    <path class="wave wave-front" d="M 0 144 Q 17 134 34 144 T 68 144 T 102 144 T 136 144 T 170 144 T 200 144" stroke="#FFFFFF" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </g>
+</svg></span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">物种分布预测</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="sdm-body">
+  <div class="sdm-tabs">
+    <button class="sdm-tab active" id="sdmTabSdm" onclick="switchSdmTab('sdm')">物种分布预测</button>
+    <button class="sdm-tab" id="sdmTabFarm" onclick="switchSdmTab('farm')">智渔牧海</button>
+  </div>
+  <div id="sdmMap"></div>
+  <!-- 地图审图号（高德地图合规标注，常驻左下角） -->
+  <div class="map-approval" id="mapApproval">地图数据 © <a href="https://www.amap.com/" target="_blank" rel="noopener">高德地图</a> · 审图号 GS(2023)551号（普通）/ GS(2023)4047号（卫星）</div>
+  <div class="sdm-panel" id="sdmPanel">
+    <h1>物种分布预测</h1>
+    <div class="sdm-species-select">
+      <label>主物种：</label>
+      <select id="sdmSpecies">
+        <option value="cod" selected>大西洋鳕 · Gadus morhua</option>
+        <option value="haddock">黑线鳕 · Melanogrammus aeglefinus</option>
+        <option value="herring">鲱鱼 · Clupea harengus</option>
+        <option value="mackerel">鲭鱼 · Scomber scombrus</option>
+        <option value="halibut">比目鱼 · Hippoglossus hippoglossus</option>
+      </select>
+    </div>
+    <p class="sp" id="sdmSpeciesName">大西洋鳕 · Gadus morhua</p>
+    <p>基于 OBIS 观测记录训练的 SDM 模型，接入海洋环境因子，预测物种栖息地适宜性。</p>
+    <div class="sdm-feat-title">选择环境因子（含缺失提示）</div>
+    <label class="sdm-feat-opt"><input type="checkbox" id="f-depth" checked> 水深（ETOPO）</label>
+    <label class="sdm-feat-opt"><input type="checkbox" id="f-sst" checked> 海温（CRW）</label>
+    <label class="sdm-feat-opt"><input type="checkbox" id="f-chl" checked> 叶绿素（Aqua）</label>
+    <div class="sdm-sample-note" id="sdmSampleNote"></div>
+    <p style="font-size:12px;color:#888;">点击地图任意海域，查看该点预测概率。</p>
+    <div class="sdm-prob-box">
+      <div class="sdm-prob-num" id="sdmProbNum">--</div>
+      <div class="sdm-prob-lbl">该海域出现概率</div>
+    </div>
+    <div id="sdmTagBox"></div>
+    <p id="sdmProbBasis" style="font-size:12px;color:#888;margin-top:6px;line-height:1.5;"></p>
+    <hr class="sdm-divider">
+    <div class="sdm-slider-title">调整环境因子，看概率变化（响应曲线）</div>
+    <div class="sdm-slider-row" data-feat="sst">
+      <label>海温 (°C) <span class="sdm-val" id="sstSliderVal">9</span></label>
+      <input type="range" id="sstSlider" min="0" max="20" value="9" step="0.5">
+    </div>
+    <div class="sdm-slider-row" data-feat="depth">
+      <label>水深 (m) <span class="sdm-val" id="depthSliderVal">-200</span></label>
+      <input type="range" id="depthSlider" min="-1000" max="0" value="-200" step="50">
+    </div>
+    <div class="sdm-slider-row" data-feat="chl">
+      <label>叶绿素 (mg/m³) <span class="sdm-val" id="chlSliderVal">0.5</span></label>
+      <input type="range" id="chlSlider" min="0" max="5" value="0.5" step="0.1">
+    </div>
+    <hr class="sdm-divider">
+    <div class="sdm-slider-title">多物种对比 · 竞争释放分析</div>
+    <div class="sdm-species-select">
+      <label>对比物种：</label>
+      <select id="sdmCompareSpecies">
+        <option value="haddock">黑线鳕 · Melanogrammus aeglefinus</option>
+        <option value="cod">大西洋鳕 · Gadus morhua</option>
+        <option value="herring">鲱鱼 · Clupea harengus</option>
+        <option value="mackerel">鲭鱼 · Scomber scombrus</option>
+        <option value="halibut">比目鱼 · Hippoglossus hippoglossus</option>
+      </select>
+    </div>
+    <p style="font-size:12px;color:#888;margin-bottom:8px;" id="sdmCompareTitle">大西洋鳕 vs 黑线鳕 —— 同一环境变化下，谁升谁降（生态位差异）</p>
+    <div id="sdmCompareInsight" style="font-size:12px;color:#555;line-height:1.6;margin-bottom:8px;"></div>
+    <button id="sdmCompareBtn" style="width:100%;padding:8px;border:none;border-radius:8px;background:#4299E0;color:#fff;font-size:13px;cursor:pointer;">查看对比详情</button>
+    <hr class="sdm-divider">
+    <div class="sdm-slider-title">AI 生态解读</div>
+    <button id="sdmExplainBtn" style="width:100%;padding:8px;border:none;border-radius:8px;background:#4299E0;color:#fff;font-size:13px;cursor:pointer;">生成生态机制解读</button>
+    <div id="sdmExplainLoading" style="display:none;margin-top:8px;padding:10px;background:#F0F7FF;border-radius:8px;font-size:12px;color:#4299E0;text-align:center;">
+      <span class="sdm-loading-spinner"></span> 正在检索全球权威数据库（OBIS / NOAA / FAO）…
+    </div>
+    <div id="sdmExplainResult" style="font-size:12px;color:#555;line-height:1.7;margin-top:8px;background:#F0F7FF;padding:10px;border-radius:8px;display:none;"></div>
+    <p class="sdm-note">数据源：OBIS（物种分布）· NOAA/星图（海洋环境）· 预测仅供参考</p>
+  </div>
+
+  <!-- 智渔牧海面板（海洋牧场水质监测预警） -->
+  <div class="sdm-panel sdm-farm-panel" id="sdmFarmPanel" style="display:none;">
+    <h1>智渔牧海 · 海洋牧场水质监测预警</h1>
+    <p class="sp">高光谱感知驱动 · 面向海洋牧场水质监测与智能预警</p>
+    <p style="font-size:12px;color:#888;margin-bottom:10px;">点击地图上的牧场点位，查看实时水质与预警。数据源：NOAA ERDDAP 实时遥感（多波段感知）。</p>
+    <div class="farm-points" id="farmPoints"><span style="color:#999;">加载牧场点位…</span></div>
+    <div class="farm-detail" id="farmDetail">
+      <div style="font-size:12px;color:#888;padding:10px;background:#F7FAFF;border-radius:8px;">请点击左侧牧场点位查看实时水质与预警</div>
+    </div>
+    <hr class="sdm-divider">
+    <div class="sdm-slider-title">中国鱼种分季节分布（智渔牧海 · SDM 生态位）</div>
+    <div class="sdm-species-select">
+      <label>鱼种：</label>
+      <select id="farmSpecies">
+        <option value="xiaohuangyu" selected>小黄鱼</option>
+        <option value="landianmajiao">蓝点马鲛</option>
+        <option value="dahuangyu">大黄鱼</option>
+      </select>
+      <label>季节：</label>
+      <select id="farmSeason">
+        <option value="spring" selected>春季（3-5月）</option>
+        <option value="summer">夏季（6-8月）</option>
+        <option value="autumn">秋季（9-11月）</option>
+        <option value="winter">冬季（12-2月）</option>
+      </select>
+    </div>
+    <p style="font-size:11px;color:#888;margin-bottom:8px;">选择鱼种与季节，地图显示该鱼种该季节的适宜分布（SDM 预测）。</p>
+    <div id="farmSeasonHint" style="font-size:12px;color:#555;line-height:1.6;margin-bottom:8px;"></div>
+    <hr class="sdm-divider">
+    <div class="sdm-slider-title">海洋牧场水质监测预警 · 技术创新</div>
+    <p style="font-size:12px;color:#555;line-height:1.7;">
+      ① <b>海洋牧场区遥感反演</b>：针对养殖设施（浮标/网箱）干扰，用多波段遥感 + 机器学习校正，提升牧场区水质反演精度。<br>
+      ② <b>SDM 生态位预警</b>：实时水质喂 SDM 模型，预测牧场经济鱼种适宜性变化（鱼还能不能活）。<br>
+      ③ <b>AI 解读 + 区块链存证</b>：DeepSeek 解读预警原因，区块链存证水质数据不可篡改。
+    </p>
+    <p class="sdm-note">数据源：NOAA ERDDAP（实时 sst/chl）· OBIS（物种分布）· 预测仅供参考</p>
+  </div>
+</main>
+
+<!-- AI 生态解读弹窗 -->
+<div id="sdmExplainModal" class="sdm-modal" style="display:none;">
+  <div class="sdm-modal-backdrop" onclick="closeSdmExplain()"></div>
+  <div class="sdm-modal-box">
+    <div class="sdm-modal-head">
+      <span class="sdm-modal-title">AI 生态解读 <span class="sdm-ai-badge">AI 生成</span></span>
+      <button class="sdm-modal-close" onclick="closeSdmExplain()" aria-label="关闭">×</button>
+    </div>
+    <div id="sdmExplainResultModal" class="sdm-modal-body"></div>
+    <div id="sdmExplainSources" class="sdm-sources" style="display:none;padding:10px 14px;border-top:1px solid #e5ecf5;font-size:12px;color:#5a6f8a;line-height:1.7;"></div>
+    <div class="sdm-modal-foot">模型基底：DeepSeek（第三方大模型 API）· 解读内容由 AI 生成，仅供参考</div>
+  </div>
+</div>
+
+<!-- 多物种对比弹窗 -->
+<div id="sdmCompareModal" class="sdm-modal" style="display:none;">
+  <div class="sdm-modal-backdrop" onclick="closeSdmCompare()"></div>
+  <div class="sdm-modal-box">
+    <div class="sdm-modal-head">
+      <span class="sdm-modal-title" id="sdmCompareModalTitle">多物种对比 · 竞争释放分析</span>
+      <button class="sdm-modal-close" onclick="closeSdmCompare()" aria-label="关闭">×</button>
+    </div>
+    <div class="sdm-modal-body">
+      <div style="margin-bottom:16px;">
+        <div style="font-size:13px;color:#5a6f8a;margin-bottom:8px;">海温响应（°C）</div>
+        <canvas id="sdmCompareSstModal" width="560" height="260" style="width:100%;background:#fafcff;border-radius:8px;"></canvas>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:13px;color:#5a6f8a;margin-bottom:8px;">水深响应（m）</div>
+        <canvas id="sdmCompareDepthModal" width="560" height="260" style="width:100%;background:#fafcff;border-radius:8px;"></canvas>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:13px;color:#5a6f8a;margin-bottom:8px;">叶绿素响应（mg/m³）</div>
+        <canvas id="sdmCompareChlModal" width="560" height="260" style="width:100%;background:#fafcff;border-radius:8px;"></canvas>
+      </div>
+      <div id="sdmCompareInsightModal" style="font-size:13px;color:#1a2b45;line-height:1.8;background:#F0F7FF;padding:12px 14px;border-radius:8px;"></div>
+    </div>
+    <div class="sdm-modal-foot">基于 SDM 响应曲线的生态位差异分析 · 数据源：OBIS / NOAA</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/static/js/sdm-20260906farmf.js?v=20260904farm"></script>
+</body>
+</html>

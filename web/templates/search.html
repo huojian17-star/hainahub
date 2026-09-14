@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>搜索 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/search.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/content">← 首页</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">搜索</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="wrap search-wrap">
+  <div class="search-box">
+    <input type="search" id="q" placeholder="搜资讯、岗位、专业指南……" autocomplete="off" autofocus>
+  </div>
+
+  <div id="results"></div>
+</main>
+
+<script src="/static/js/search.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

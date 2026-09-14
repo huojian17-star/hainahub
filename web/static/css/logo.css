@@ -1,0 +1,199 @@
+/* ============================================
+   海纳 · Logo 组件样式 + 动效（v1 · 最终版）
+   ============================================ */
+
+/* 导航栏 Logo 容器 */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  flex: 0 0 auto;
+}
+
+/* 图标框 */
+.logo-mark {
+  display: inline-block;
+  width: 44px;
+  height: 36px;
+  position: relative;
+  flex: 0 0 auto;
+}
+.logo-mark svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+/* 文字部分 */
+.logo-text {
+  font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  transition: color 0.3s ease;
+}
+.logo-text::after {
+  content: ".";
+  color: #2FD4DA;
+  margin-left: -4px;
+}
+
+.logo-en {
+  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  opacity: 0.55;
+  text-transform: uppercase;
+  position: relative;
+  top: -4px;
+}
+
+/* ============ 灯塔光束（旋转） ============ */
+.logo-mark .light-beam {
+  transform-origin: 120px 36px;
+  transform-box: fill-box;
+  animation: beam-rotate 9s linear infinite;
+  mix-blend-mode: screen;
+}
+@keyframes beam-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ============ 灯塔光晕（脉动） ============ */
+.logo-mark .lighthouse-glow ellipse {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: glow-pulse 2.6s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.92); }
+  50%      { opacity: 1;    transform: scale(1.18); }
+}
+
+/* 灯塔室内灯 微闪烁 */
+.logo-mark .lighthouse > circle {
+  animation: core-flicker 1.6s ease-in-out infinite;
+}
+@keyframes core-flicker {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.78; }
+}
+
+/* ============ 星辰（旋转 + 缩放闪烁） ============ */
+.logo-mark .star {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: star-twinkle 2.8s ease-in-out infinite;
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.65; transform: scale(0.85) rotate(0deg); }
+  50%      { opacity: 1;    transform: scale(1.15) rotate(45deg); }
+}
+
+/* ============ 海浪（双层流动） ============ */
+.logo-mark .wave {
+  stroke-dasharray: 6 4;
+}
+.logo-mark .wave-front {
+  animation: wave-flow 3.2s linear infinite;
+}
+.logo-mark .wave-back {
+  animation: wave-flow 4.6s linear infinite reverse;
+  opacity: 0.55;
+}
+@keyframes wave-flow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -20; }
+}
+
+/* ============ 入场动画（海纳百川汇聚） ============ */
+.brand-logo .logo-mark {
+  opacity: 0;
+  transform: translateY(6px) scale(0.9);
+  animation: logo-arrive 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+@keyframes logo-arrive {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 海浪笔触从两侧向中心汇入（笔画绘制） */
+.brand-logo .logo-mark .wave {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation:
+    wave-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) 0.4s forwards,
+    wave-flow 3.2s linear 1.5s infinite;
+}
+.brand-logo .logo-mark .wave-back {
+  animation:
+    wave-draw 1.0s cubic-bezier(0.65, 0, 0.35, 1) 0.55s forwards,
+    wave-flow 4.6s linear 1.6s infinite reverse;
+  opacity: 0.55;
+}
+@keyframes wave-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* 灯塔光束延迟出现 */
+.brand-logo .logo-mark .light-beam {
+  opacity: 0;
+  animation:
+    beam-fade-in 0.6s ease-out 1.0s forwards,
+    beam-rotate 9s linear 1.6s infinite;
+}
+@keyframes beam-fade-in {
+  to { opacity: 1; }
+}
+
+/* ============ Hover 强化（交互反馈） ============ */
+.brand-logo:hover .logo-mark .wave-front { animation-duration: 1.5s; }
+.brand-logo:hover .logo-mark .wave-back  { animation-duration: 2.2s; }
+.brand-logo:hover .logo-mark .lighthouse-glow ellipse {
+  animation-duration: 1.1s;
+}
+.brand-logo:hover .logo-mark .star {
+  animation-duration: 1.4s;
+}
+.brand-logo:hover .logo-mark .light-beam {
+  animation-duration: 4s, 4s;
+}
+.brand-logo:hover .logo-text {
+  color: #2FD4DA;
+}
+
+/* ============ 偏好减弱动效 ============ */
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark .light-beam,
+  .logo-mark .lighthouse-glow ellipse,
+  .logo-mark .star,
+  .logo-mark .wave,
+  .logo-mark .lighthouse > circle,
+  .brand-logo .logo-mark {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/* ============ 响应式：窄屏缩小 ============ */
+@media (max-width: 720px) {
+  .logo-mark { width: 36px; height: 30px; }
+  .logo-text { font-size: 18px; letter-spacing: 0.08em; }
+  .logo-en { font-size: 9px; }
+  .brand-logo { gap: 10px; }
+}
+
+/* 顶部条场景下的紧凑版（news/article） */
+.topbar-brand .logo-mark { width: 36px; height: 30px; }
+.topbar-brand .logo-text { font-size: 18px; letter-spacing: 0.08em; }
+.topbar-brand .logo-en { font-size: 9px; }

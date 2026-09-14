@@ -1,0 +1,945 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: #0A2540;
+  color: #E6EDF3;
+  overflow: hidden;
+}
+
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(10, 37, 64, 0.1);
+}
+.topbar .back {
+  color: #0A5A7A;
+  text-decoration: none;
+  font-size: 14px;
+}
+.topbar .brand { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #0A2540; }
+.topbar .sub { color: #3A5A7A; font-size: 13px; }
+.topbar .logo-text { color: #0A2540; }  /* 白底导航栏，logo 文字深色 */
+.topbar-upload {
+  margin-left: auto;
+  background: #2FD4DA;
+  color: #042E2B;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.topbar-upload:hover { background: #3FE0E6; }
+
+/* 头像按钮 */
+.avatar-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #123A5F;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  padding: 0;
+}
+.avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.ocean-layout {
+  position: relative;
+  height: calc(100vh - 56px - 52px);  /* 视口 - topbar(56px) - 分类按钮栏(mode-bar实测52px) */
+}
+#map { position: absolute; inset: 0; min-width: 0; min-height: 0; }
+
+/* 投稿邮箱引导条（PGC 制：站外邮箱收稿，站长审核后刊登） */
+.map-tip {
+  position: absolute;
+  left: 12px;
+  bottom: 28px;
+  z-index: 900;
+  max-width: 420px;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.85), rgba(150, 190, 230, 0.75));
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #1A2A3A;
+  line-height: 1.6;
+  pointer-events: auto;
+}
+.map-tip a {
+  color: #0A5A7A;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(10, 90, 122, 0.5);
+}
+.map-tip a:hover { color: #0A7A9A; }
+.flow-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.9), rgba(150, 190, 230, 0.82));
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 14px 22px;
+  font-size: 14px;
+  color: #0A2540;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+.flow-loading.hidden { display: none; }
+.flow-source {
+  position: absolute;
+  left: 12px;
+  bottom: 28px;
+  z-index: 900;
+  font-size: 11px;
+  color: #1A2A3A;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.82), rgba(150, 190, 230, 0.72));
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  padding: 4px 8px;
+  pointer-events: auto;
+  line-height: 1.5;
+}
+.flow-source.hidden { display: none; }
+.flow-source a {
+  color: #0A5A7A;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(10, 90, 122, 0.4);
+}
+.flow-source a:hover { color: #0A7A9A; }
+
+/* 图例（SST / 叶绿素） */
+.legend {
+  position: absolute;
+  left: 12px;
+  bottom: 76px;   /* 贴着数据来源标注（flow-source bottom:28）上方 */
+  z-index: 900;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.82), rgba(150, 190, 230, 0.72));
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  width: 180px;
+}
+.legend.hidden { display: none; }
+.legend-title {
+  font-size: 12px;
+  color: #0A2540;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.legend-bar {
+  height: 12px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+.sst-bar {
+  background: linear-gradient(90deg, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000);
+}
+.chl-bar {
+  background: linear-gradient(90deg, #0000ff, #00ff00, #ffff00, #ff0000, #8b0000);
+}
+.sss-bar {
+  background: linear-gradient(90deg, #6a0dad, #0000ff, #00aa88, #ffff00, #ff8800);
+}
+.current-bar {
+  background: linear-gradient(90deg, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000);
+}
+/* 台风标记 */
+.typhoon-icon { background: transparent; border: none; }
+.typhoon-dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ff3366;
+  border: 2px solid #fff;
+  box-shadow: 0 0 8px rgba(255, 51, 102, 0.8);
+}
+/* 台风弹窗 */
+.typhoon-popup { min-width: 160px; }
+.tp-name { font-size: 15px; font-weight: 700; color: #123B57; margin-bottom: 6px; }
+.tp-en { font-size: 12px; font-weight: 400; color: #6b8aa3; }
+.tp-row { font-size: 12px; color: #3a5a7a; margin-bottom: 3px; }
+.tp-btn {
+  margin-top: 8px;
+  display: inline-block;
+  background: #2FD4DA;
+  color: #042E2B;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.tp-btn:hover { background: #25c2c8; }
+/* 台风路径图例 */
+.tp-legend-rt { color: #ff6600; }
+.tp-legend-fc { color: #ff3366; }
+/* 台风年份下拉 */
+.typhoon-year {
+  background: rgba(9, 34, 62, 0.9);
+  color: #E6EDF3;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+/* 台风侧边栏 */
+.typhoon-panel.hidden { display: none; }
+.typhoon-panel {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  width: 220px;
+  max-height: 70%;
+  overflow-y: auto;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.82), rgba(150, 190, 230, 0.72));
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+}
+.tp-panel-head {
+  font-size: 14px;
+  font-weight: 700;
+  color: #123B57;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(18, 59, 87, 0.15);
+}
+.typhoon-list { padding: 6px 0; }
+.typhoon-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  color: #123B57;
+  font-size: 13px;
+}
+.typhoon-item:hover { background: rgba(255, 255, 255, 0.4); }
+.typhoon-item-name small { color: #5a7a94; font-size: 11px; }
+.typhoon-active-tag {
+  margin-left: auto;
+  font-size: 10px;
+  color: #042E2B;
+  background: #2FD4DA;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.typhoon-loading { padding: 12px 14px; color: #5a7a94; font-size: 13px; }
+.typhoon-cb { accent-color: #2FD4DA; }
+/* 台风时间轴（毛玻璃） */
+.typhoon-timeline.hidden { display: none; }
+.typhoon-timeline {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 380px;
+  max-width: 90%;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.85), rgba(150, 190, 230, 0.75));
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.tt-name { font-size: 13px; font-weight: 700; color: #123B57; margin-bottom: 6px; }
+.tt-range { width: 100%; accent-color: #2FD4DA; }
+.tt-info { margin-top: 6px; font-size: 12px; color: #123B57; }
+.tt-time { font-weight: 700; margin-bottom: 3px; }
+.tt-row { margin-bottom: 2px; }
+.legend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #3A5A7A;
+}
+
+/* 经纬线度数标签 */
+.graticule-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #0A5A7A;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* 四边经纬度刻度（数字跟随屏幕四边） */
+.edge-scale {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 800;
+}
+.edge-scale.hidden { display: none; }
+.edge-scale > div {
+  position: absolute;
+  font-size: 10px;
+  color: #0A5A7A;
+  pointer-events: none;
+}
+.edge-top { top: 0; left: 0; right: 0; height: 0; }
+.edge-bottom { bottom: 0; left: 0; right: 0; height: 0; }
+.edge-left { left: 0; top: 0; bottom: 0; width: 0; }
+.edge-right { right: 0; top: 0; bottom: 0; width: 0; }
+.edge-label {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.75);
+  padding: 1px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  transform: translate(-50%, 0);
+}
+.edge-left .edge-label, .edge-right .edge-label { transform: translate(0, -50%); }
+.flow-loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(95, 227, 232, 0.25);
+  border-top-color: #5FE3E8;
+  border-radius: 50%;
+  animation: flow-spin 0.8s linear infinite;
+}
+@keyframes flow-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Leaflet 深色适配 */
+.leaflet-container { background: #0A2540; }
+.leaflet-control-zoom { border: 1px solid rgba(255,255,255,0.15) !important; box-shadow: none !important; }
+.leaflet-control-zoom a { width: 26px !important; height: 26px !important; line-height: 26px !important; background: #0E2540 !important; color: #A8C8E8 !important; border-color: rgba(255,255,255,0.1) !important; }
+
+.ocean-detail {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 480px;
+  max-height: calc(100% - 32px);
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.82), rgba(150, 190, 230, 0.72));
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+.ocean-detail.hidden { display: none; }
+
+.detail-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 24px;
+  line-height: 1;
+  color: #1A2A3A;
+  cursor: pointer;
+  background: none;
+  border: none;
+  z-index: 1;
+}
+.detail-close:hover { color: #0A5A7A; }
+
+.detail-empty {
+  text-align: center;
+  color: #1A2A3A;
+  margin-top: 40%;
+}
+.detail-empty .empty-icon { font-size: 40px; margin-bottom: 12px; }
+.detail-empty .empty-sub { font-size: 12px; margin-top: 8px; color: #3A5A7A; }
+
+/* 海域详情卡片 */
+.ocean-card h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; color: #0A2540; }
+.ocean-card .ocean-type {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+.ocean-type.jinshai { background: #2FD4DA; color: #042E2B; }
+.ocean-type.yuanhai { background: #5AA0E8; color: #04233B; }
+.ocean-type.shenhai { background: #123A5F; color: #A8C8E8; border: 1px solid #2A4A6C; }
+.ocean-type.jidi { background: #7FA8D0; color: #04233B; }
+.ocean-type.jinshi { background: #2FD4DA; color: #042E2B; }
+
+.ocean-card .ocean-desc { color: #1A2A3A; font-size: 14px; line-height: 1.7; margin: 8px 0 20px; }
+
+.ocean-photo {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 20px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 多图：切换式（叠放 + 圆点切换） */
+.ocean-photos { position: relative; margin-bottom: 20px; }
+.ocean-slide {
+  display: none;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  cursor: zoom-in;
+}
+.ocean-slide.active { display: block; }
+.photo-dots { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
+.photo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background .2s;
+}
+.photo-dot.active { background: #2FD4DA; }
+.ocean-photo.ph-jinshai { background: linear-gradient(135deg, #2FD4DA, #155C94); }
+.ocean-photo.ph-yuanhai { background: linear-gradient(135deg, #5AA0E8, #123A5F); }
+.ocean-photo.ph-shenhai { background: linear-gradient(135deg, #123A5F, #061224); }
+.ocean-photo.ph-jidi { background: linear-gradient(135deg, #7FA8D0, #123A5F); }
+
+.photo-credit {
+  font-size: 11px;
+  color: #6B7A8C;
+  margin: -14px 0 14px;
+  text-align: right;
+  word-break: break-all;
+}
+
+.ocean-card h3 {
+  font-size: 13px;
+  color: #0A2540;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin: 16px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(10, 37, 64, 0.15);
+}
+
+.feed-item { padding: 10px 0; border-bottom: 1px solid rgba(10, 37, 64, 0.08); }
+.feed-item:last-child { border-bottom: none; }
+.feed-item a { color: #0A2540; text-decoration: none; font-size: 14px; line-height: 1.5; display: block; }
+.feed-item a:hover { color: #0A5A7A; }
+.feed-item .feed-meta { font-size: 12px; color: #3A5A7A; margin-top: 3px; }
+.feed-none { color: #3A5A7A; font-size: 13px; padding: 8px 0; }
+
+/* 地图锚点 */
+.pin-wrap { display: block; width: 16px; height: 16px; position: relative; }
+
+/* 海域名标签（自绘，配合干净底图） */
+.sea-label {
+  display: inline-block;
+  font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  color: #2A6FA0;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.pin-dot {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.pin-wrap:hover .pin-dot { transform: scale(1.4); }
+
+/* 照片可点击看大图 */
+.ocean-photo { cursor: zoom-in; position: relative; }
+.ocean-photo::after {
+  content: "🔍 点击看大图";
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 3px 9px;
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+/* Lightbox 大图 */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 12, 20, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  cursor: zoom-out;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 92vw;
+  max-height: 88vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  font-size: 40px;
+  color: #E6EDF3;
+  cursor: pointer;
+  line-height: 1;
+}
+.lightbox-close:hover { color: #2FD4DA; }
+.lightbox-hint {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #A8B8C8;
+}
+
+/* 网友照片墙 */
+.photo-wall {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.photo-cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: #123A5F;
+}
+.photo-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.photo-cell-nick {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 11px;
+  color: #fff;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  padding: 12px 6px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 上传表单 */
+.upload-box {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.upload-input {
+  background: #081A2C;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: #E6EDF3;
+  font-size: 13px;
+  outline: none;
+}
+.upload-input::placeholder { color: #6B7A8C; }
+.upload-input:focus { border-color: #2FD4DA; }
+.upload-btn {
+  background: #2FD4DA;
+  color: #042E2B;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.upload-btn:hover { background: #3FE0E6; }
+.upload-btn:disabled { opacity: 0.6; cursor: default; }
+
+/* 作品 pin（亮金色+发光，区分种子点青蓝和城市红点） */
+.post-dot {
+  background: #FFC53D;
+  box-shadow: 0 0 6px rgba(255, 197, 61, 0.5);
+}
+
+/* 上传弹窗 */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 12, 20, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+}
+.modal.open { display: flex; }
+.modal-box {
+  width: 460px;
+  max-width: 92vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #0E2540;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-box h2 { font-size: 20px; font-weight: 700; }
+.modal-tip { font-size: 12px; color: #A8B8C8; line-height: 1.6; }
+.submit-notice {
+  font-size: 12px;
+  color: #C9D6E3;
+  line-height: 1.7;
+  background: rgba(255, 200, 90, 0.08);
+  border-left: 3px solid #FFC85A;
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin-top: 4px;
+}
+.modal-file { color: #A8B8C8; font-size: 13px; }
+.modal-input {
+  background: #081A2C;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: #E6EDF3;
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+}
+.modal-input::placeholder { color: #6B7A8C; }
+.modal-input:focus { border-color: #2FD4DA; }
+.post-map { height: 200px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+/* 省市区三级联动 */
+.region-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.region-select {
+  width: 100%;
+  appearance: none;
+  cursor: pointer;
+}
+.modal-actions { display: flex; gap: 10px; }
+.modal-submit {
+  flex: 1;
+  background: #2FD4DA;
+  color: #042E2B;
+  border: none;
+  border-radius: 6px;
+  padding: 11px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal-submit:disabled { opacity: 0.6; }
+.modal-cancel {
+  padding: 11px 18px;
+  background: transparent;
+  color: #A8B8C8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* 作品详情 */
+.post-addr { color: #0A5A7A; font-size: 13px; margin: -6px 0 8px; }
+
+/* 评论 */
+.comment-item {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(10, 37, 64, 0.08);
+}
+.comment-item:last-child { border-bottom: none; }
+.comment-nick { font-size: 13px; font-weight: 600; color: #0A5A7A; margin-bottom: 3px; }
+.comment-text { font-size: 14px; line-height: 1.6; color: #1A2A3A; }
+.comment-img {
+  margin-top: 8px;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  cursor: zoom-in;
+}
+.comment-form { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.comment-actions { display: flex; gap: 8px; align-items: center; }
+.c-img-btn {
+  background: transparent;
+  color: #2FD4DA;
+  border: 1px solid rgba(47, 212, 218, 0.4);
+  border-radius: 6px;
+  padding: 9px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.comment-actions .upload-btn { flex: 1; }
+
+/* ============ 手机端适配（<720px） ============ */
+@media (max-width: 720px) {
+  .topbar { padding: 0 14px; gap: 8px; }
+  .topbar .brand { font-size: 15px; }
+  .topbar .sub { display: none; }
+  .topbar-upload { padding: 7px 12px; font-size: 13px; }
+  .map-tip { display: none; } /* 小屏地图空间有限，投稿入口保留在 topbar 按钮 */
+  .brand-logo { gap: 8px; }
+  .brand-logo .logo-mark { width: 32px; height: 26px; }
+  .brand-logo .logo-text { font-size: 18px; }
+
+  /* 悬浮卡片 → 底部抽屉（bottom sheet），从下往上滑出 */
+  .ocean-layout { overflow: hidden; }
+  .ocean-detail {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 55vh;
+    border-radius: 16px 16px 0 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    transform: translateY(100%);
+  }
+  .ocean-detail.hidden { display: block; transform: translateY(100%); }
+  .ocean-detail:not(.hidden) { transform: translateY(0); }
+
+  /* 上传弹窗适配小屏 */
+  .modal-box { padding: 18px; }
+  .post-map { height: 150px; }
+}
+
+/* ===== 2026-08-25：海域图鉴分类切换（图鉴/潮汐表）===== */
+.ocean-mode-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #0A2540;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;  /* 联想下拉定位参照 */
+}
+.ocean-mode-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+.ocean-mode-btn:hover { background: rgba(255, 255, 255, 0.1); }
+.ocean-mode-btn.active {
+  background: #2FD4DA;
+  color: #042E2B;
+  border-color: #2FD4DA;
+}
+
+/* 潮汐搜索框 */
+.tide-search {
+  flex: 1;
+  max-width: 280px;
+  margin-left: auto;
+  background: #FFFFFF;
+  border: 1px solid rgba(10, 37, 64, 0.2);
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: #0A2540;
+  font-size: 13px;
+  outline: none;
+}
+.tide-search::placeholder { color: #3A5A7A; }
+.tide-search:focus { border-color: #0A5A7A; background: #F0F4F8; }
+
+/* SST 时间滑块 */
+.sst-time-wrap {
+  flex: 1;
+  max-width: 280px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sst-time-range {
+  flex: 1;
+  accent-color: #2FD4DA;
+  cursor: pointer;
+}
+.sst-time-label {
+  font-size: 12px;
+  color: #3A5A7A;
+  min-width: 40px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 叶绿素日期选择 */
+.chl-time-wrap {
+  margin-left: auto;
+}
+.chl-time-select {
+  background: #FFFFFF;
+  border: 1px solid rgba(10, 37, 64, 0.2);
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: #0A2540;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+.chl-time-select:focus { border-color: #0A5A7A; }
+
+/* 潮汐联想下拉（显示在搜索框下方，跟搜索框右对齐） */
+.tide-suggest {
+  position: absolute;
+  top: 100%;       /* 在 mode-bar 下方 */
+  right: 16px;     /* 跟搜索框右对齐 */
+  max-width: 280px;
+  background: #0E2540;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  overflow: hidden;
+}
+.tide-suggest-item {
+  padding: 8px 14px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.tide-suggest-item:hover { background: rgba(47, 212, 218, 0.15); }
+.tide-suggest-sub { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-left: 6px; }
+
+/* 潮汐站点标记（红色，跟深蓝背景对比强） */
+.tide-dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: #FF4D4F;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 77, 79, 0.7);
+}
+.tide-region {
+  display: inline-block;
+  background: rgba(18, 58, 95, 0.92);
+  border: 1px solid rgba(47, 212, 218, 0.5);
+  color: #EAF6FF;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tide-region:hover { background: rgba(47, 212, 218, 0.2); }
+
+/* 潮汐弹窗卡片 */
+.tide-card { padding: 4px 2px; }
+.tide-title { font-size: 18px; font-weight: 700; color: #0A2540; margin: 0 0 6px; }
+.tide-sub { font-size: 13px; color: #3A5A7A; margin: 0 0 12px; }
+.tide-day { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(10, 37, 64, 0.1); }
+.tide-day:last-child { border-bottom: none; }
+.tide-day-date { font-size: 14px; font-weight: 600; color: #0A5A7A; margin: 0 0 4px; }
+.tide-day-sun { font-size: 12px; color: #3A5A7A; margin: 0 0 8px; }
+.tide-curve { display: block; width: 100%; height: 90px; margin-bottom: 8px; border-radius: 6px; background: rgba(10, 37, 64, 0.06); }
+.tide-tooltip {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(10, 90, 122, 0.4);
+  color: #1A2A3A;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 1000;
+}
+.tide-tooltip b { color: #0A5A7A; }
+.tide-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tide-table th, .tide-table td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(10, 37, 64, 0.1);
+  color: #1A2A3A;
+}
+.tide-table th { color: #0A5A7A; font-weight: 600; }
+.tide-note { margin-top: 12px; font-size: 11px; color: #3A5A7A; }
+.tide-loading, .tide-error { padding: 20px 0; color: #3A5A7A; font-size: 14px; }
+
+/* 查看全部天数按钮 */
+.tide-more {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  background: rgba(10, 90, 122, 0.1);
+  border: 1px solid rgba(10, 90, 122, 0.4);
+  color: #0A5A7A;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background .18s ease;
+}
+.tide-more:hover { background: rgba(10, 90, 122, 0.2); }

@@ -1,0 +1,234 @@
+/* 海纳 · 海洋计算工具箱（侧边栏小工具） */
+/* 深色主题适配：跟 .ocean-detail 一致的深蓝卡片风格 */
+
+/* 顶栏工具箱按钮（投稿上地图 旁边） */
+.topbar-tools {
+  background: rgba(10, 90, 122, 0.08);
+  border: 1px solid #0A5A7A;
+  color: #0A5A7A;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .18s ease;
+}
+.topbar-tools:hover { background: rgba(10, 90, 122, 0.18); }
+.topbar-tools.active { background: #0A5A7A; color: #FFFFFF; border-color: #0A5A7A; }
+
+/* 底图下拉菜单 */
+.basemap-wrap { position: relative; }
+.basemap-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.95), rgba(150, 190, 230, 0.9));
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1100;
+  min-width: 160px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+.basemap-menu.hidden { display: none; }
+.basemap-option {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #0A2540;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(10, 37, 64, 0.08);
+  transition: background .15s ease;
+}
+.basemap-option:last-child { border-bottom: none; }
+.basemap-option:hover { background: rgba(10, 90, 122, 0.12); }
+.basemap-option.active { background: rgba(10, 90, 122, 0.16); font-weight: 600; }
+.tools-fab.hidden { display: none; }
+
+/* 展开面板（顶栏下方下拉，跟顶栏工具箱按钮对齐；毛玻璃） */
+.tools-panel {
+  position: absolute;
+  top: 60px;      /* 顶栏（56px）下方 */
+  right: 16px;
+  z-index: 1000;
+  width: 336px;
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 120px);
+  overflow-y: auto;
+  background: rgba(14, 37, 64, 0.72);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+.tools-panel.hidden { display: none; }
+
+/* 面板头部 */
+.tools-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.tools-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #E6EDF3;
+  letter-spacing: 0.5px;
+}
+.tools-close {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: none;
+  color: #A8B8C8;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.tools-close:hover { color: #5FE3E8; }
+
+/* tab 切换 */
+.tools-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  background: rgba(8, 26, 44, 0.6);
+  padding: 4px;
+  border-radius: 10px;
+}
+.tools-tab {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  background: transparent;
+  color: rgba(234, 242, 250, 0.7);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+.tools-tab.active {
+  background: #2FD4DA;
+  color: #042E2B;
+  font-weight: 600;
+}
+.tools-tab:not(.active):hover { color: #E6EDF3; }
+
+/* 面板内容区 */
+.tools-body.hidden { display: none; }
+.tools-body { display: flex; flex-direction: column; gap: 10px; }
+
+.tools-row { display: flex; flex-direction: column; gap: 6px; }
+.tools-label {
+  font-size: 12px;
+  color: rgba(234, 242, 250, 0.72);
+  font-weight: 500;
+}
+.tools-input {
+  width: 100%;
+  background: #081A2C;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  padding: 9px 12px;
+  color: #E6EDF3;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .18s ease;
+}
+.tools-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.tools-input:focus { border-color: #2FD4DA; }
+
+.tools-select {
+  background: #081A2C;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  padding: 8px 10px;
+  color: #E6EDF3;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+.tools-select:focus { border-color: #2FD4DA; }
+
+/* 经纬度方向选择 */
+.tools-dir {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(234, 242, 250, 0.72);
+}
+.tools-dir .tools-select { flex: 1; }
+
+/* DMS 三输入框 */
+.tools-dms {
+  display: flex;
+  gap: 6px;
+}
+.tools-dms-in { flex: 1; text-align: center; }
+
+/* 换算按钮 */
+.tools-btn {
+  background: rgba(47, 212, 218, 0.14);
+  border: 1px solid rgba(47, 212, 218, 0.45);
+  color: #5FE3E8;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .18s ease;
+}
+.tools-btn:hover { background: rgba(47, 212, 218, 0.24); }
+
+/* 结果展示 */
+.tools-result {
+  font-size: 13px;
+  color: #EAF6FF;
+  line-height: 1.6;
+  background: rgba(8, 26, 44, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  word-break: break-all;
+  min-height: 20px;
+}
+
+/* 分隔线 */
+.tools-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}
+
+/* 备注说明 */
+.tools-note {
+  font-size: 11px;
+  color: rgba(234, 242, 250, 0.55);
+  line-height: 1.6;
+}
+
+/* ============ 手机端适配（<720px）============ */
+@media (max-width: 720px) {
+  .tools-fab {
+    left: 12px;
+    bottom: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  .tools-panel {
+    left: 12px;
+    right: 12px;
+    bottom: 20px;
+    width: auto;
+    max-width: none;
+    max-height: 70vh;
+  }
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>期刊分级 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/style.css?v=20260905">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body class="journal-page">
+<div class="ocean-bg" id="oceanBg"></div>
+
+<main class="wrap journal-list-page">
+  <header class="article-head">
+    <a class="back" href="/content#journals">← 返回</a>
+    <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+      <span class="logo-mark">{% include "_logo_white.html" %}</span>
+      <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+    </a>
+  </header>
+
+  <h1 class="journal-list-title">期刊分级</h1>
+  <p class="journal-list-desc">海洋学领域期刊分区速查，按研究方向分类查询。</p>
+  <div class="journal-note">数据仍在收集中，分区以官方最新发布为准。</div>
+
+  <!-- 分类栏 -->
+  <div class="journal-filter" id="journalFilter">
+    <button class="jf-btn active" data-cat="全部">全部</button>
+    <button class="jf-btn" data-cat="物理海洋">物理海洋</button>
+    <button class="jf-btn" data-cat="海洋生态">海洋生态</button>
+    <button class="jf-btn" data-cat="海洋化学">海洋化学</button>
+    <button class="jf-btn" data-cat="海洋工程">海洋工程</button>
+    <button class="jf-btn" data-cat="海洋管理">海洋管理</button>
+    <button class="jf-btn" data-cat="综合海洋">综合海洋</button>
+  </div>
+
+  <div class="journal-grid" id="journalGrid">
+    <p class="journal-loading">期刊数据加载中…</p>
+  </div>
+</main>
+
+<script src="/static/js/journals-list.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

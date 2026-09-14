@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>转行出路 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/content">← 首页</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">转行出路</span>
+  <a class="topbar-section" href="/job-map" style="cursor:pointer;text-decoration:none;">岗位对应表</a>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="wrap">
+  <div class="news-list" id="list">
+    <div class="loading">打捞中……</div>
+  </div>
+  <div class="pager" id="pager">
+    <button class="page-btn" id="prevBtn">上一页</button>
+    <span class="page-info" id="pageInfo">第 1/1 页</span>
+    <button class="page-btn" id="nextBtn">下一页</button>
+  </div>
+</main>
+
+<script>
+(function () {
+  var PAGE = 20, offset = 0, total = 0;
+  var list = document.getElementById("list");
+  var prevBtn = document.getElementById("prevBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  var pageInfo = document.getElementById("pageInfo");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function load() {
+    list.innerHTML = '<div class="loading">打捞中……</div>';
+    var q = new URLSearchParams({ category: "转行出路", limit: String(PAGE), offset: String(offset) });
+    fetch("/api/news?" + q)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var items = data.items || [];
+        total = data.total || 0;
+        if (!items.length) {
+          list.innerHTML = '<div class="news-card empty">文章正在路上……</div>';
+          prevBtn.disabled = true; nextBtn.disabled = true;
+          pageInfo.textContent = "第 1/1 页";
+          return;
+        }
+        list.innerHTML = items.map(function (it) {
+          return '<article class="news-card">' +
+            '<div class="news-text">' +
+            '<div class="news-meta"><span class="news-src">海纳解读</span>' +
+            (it.date ? '<span class="news-date">' + esc(it.date) + '</span>' : "") +
+            '</div>' +
+            '<a class="news-title" href="/article/' + it.id + '">' + esc(it.title) + '</a>' +
+            '</div>' +
+            '</article>';
+        }).join("");
+        var pages = Math.max(1, Math.ceil(total / PAGE));
+        var cur = Math.floor(offset / PAGE) + 1;
+        pageInfo.textContent = "第 " + cur + "/" + pages + " 页";
+        prevBtn.disabled = offset === 0;
+        nextBtn.disabled = offset + items.length >= total;
+      })
+      .catch(function () {
+        list.innerHTML = '<div class="news-card empty">打捞失败……</div>';
+      });
+  }
+
+  prevBtn.onclick = function () { if (offset >= PAGE) { offset -= PAGE; load(); } };
+  nextBtn.onclick = function () { if (offset + PAGE < total) { offset += PAGE; load(); } };
+
+  load();
+})();
+</script>
+{% include "_feedback.html" %}
+</body>
+</html>

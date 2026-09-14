@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>站长后台 · 海纳英才</title>
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/auth.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+{% include "_analytics.html" %}
+</head>
+<body>
+<header class="admin-topbar">
+  <a class="brand-logo" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="admin-title">站长后台</span>
+  <button id="authBtn" class="topbar-auth">登录</button>
+</header>
+
+<main class="admin-wrap">
+  <div id="gate" class="gate">
+    <p>这是站长后台，需要管理员权限。</p>
+    <p class="gate-sub">点右上角「登录」用管理员账号登录。</p>
+  </div>
+
+  <div id="panel" style="display:none">
+    <h2>待审投稿</h2>
+    <p class="admin-tip">投稿 agent 每天自动从邮箱收录，你在这里审核：通过上地图、拒绝丢弃。</p>
+    <div id="pendingList" class="pending-list"><div class="loading">加载中……</div></div>
+  </div>
+</main>
+
+<!-- 登录弹窗（复用 auth.js） -->
+<div class="auth-modal" id="authModal">
+  <div class="auth-box">
+    <h2 id="authTitle">登录</h2>
+    <input type="text" id="authUsername" class="auth-input" placeholder="用户名" autocomplete="username">
+    <input type="password" id="authPassword" class="auth-input" placeholder="密码" autocomplete="current-password">
+    <input type="password" id="authPassword2" class="auth-input" placeholder="确认密码（再输一遍）" autocomplete="new-password" style="display:none;">
+    <div class="auth-actions">
+      <button id="authSubmit" class="auth-submit">登录</button>
+      <button id="authToggle" class="auth-cancel">去注册</button>
+    </div>
+    <a id="authForgot" class="auth-forgot" href="javascript:;" style="display:none;">忘记密码？</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/admin.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海洋动态 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/content">← 首页</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">海洋动态</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="wrap">
+  <div class="filters">
+    <div class="filter-group" id="catTabs">
+      <button class="filter-btn active" data-cat="">全部</button>
+    </div>
+    <div class="filter-group" id="srcTabs">
+      <button class="filter-btn active" data-src="">全部来源</button>
+    </div>
+  </div>
+
+  <div class="news-list" id="list">
+    <div class="loading">打捞中……</div>
+  </div>
+
+  <div class="pager" id="pager">
+    <button class="page-btn" id="prevBtn">上一页</button>
+    <span class="page-info" id="pageInfo">第 1/1 页</span>
+    <button class="page-btn" id="nextBtn">下一页</button>
+  </div>
+</main>
+
+<script src="/static/js/news.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

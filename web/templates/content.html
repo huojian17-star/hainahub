@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海纳英才 · 海洋知识平台</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="/static/css/style.css?v=20260905">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/auth.css">
+<link rel="stylesheet" href="/static/css/transfer-map.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="stylesheet" href="/static/css/animations.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+<script>
+  // 2026-08-23：content 页跳过 hero 海面初始化，只保留 THREE + GLTFLoader（给鱼群用）
+  window.__skipOcean = true;
+</script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "/static/vendor/three/three.module.min.js",
+    "GLTFLoader": "/static/vendor/three/GLTFLoader.js",
+    "EXRLoader": "/static/vendor/three/EXRLoader.js",
+    "EffectComposer": "/static/vendor/three/postprocessing/EffectComposer.js",
+    "RenderPass": "/static/vendor/three/postprocessing/RenderPass.js",
+    "ShaderPass": "/static/vendor/three/postprocessing/ShaderPass.js",
+    "BokehPass": "/static/vendor/three/postprocessing/BokehPass.js",
+    "UnrealBloomPass": "/static/vendor/three/postprocessing/UnrealBloomPass.js",
+    "OutputPass": "/static/vendor/three/postprocessing/OutputPass.js"
+  }
+}
+</script>
+<script type="module" src="/static/js/three-loader.js"></script>
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg" id="oceanBg"></div>
+
+<!-- 2026-08-23：下潜加载遮罩——等鱼群模型+岗位数据加载完成后隐藏 -->
+<div class="dive-loading" id="contentLoading">
+  <div class="dive-loading-bubbles"></div>
+  <div class="dive-loading-text">正在下潜…</div>
+</div>
+
+<!-- 内容页导航（下潜后进入，锚点指向本页板块） -->
+<nav class="nav" data-od-id="content-nav">
+  <a class="brand-logo" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">HAINA</span></span>
+  </a>
+  <button class="nav-burger" id="navBurger" aria-label="打开菜单" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links" id="navLinks">
+    <a href="#jobs" class="nav-jobs">岗位库</a>
+    <a href="#news">动态</a>
+    <a href="/ocean">海域图鉴</a>
+    <a href="#transfer">转行</a>
+    <a href="#abyss">深海</a>
+  </div>
+  <button class="nav-perf" id="navPerf" aria-label="性能设置">性能</button>
+  <button id="authBtn" class="topbar-auth" style="display:none">登录</button>
+</nav>
+
+<!-- ======== 浅海：岗位库（核心 C 位） ======== -->
+<section class="zone zone-jobs" id="jobs">
+  <canvas id="fishCanvas" class="fish-canvas" aria-hidden="true"></canvas>
+  <div class="zone-head">
+    <h2 class="zone-title">岗位</h2>
+    <p class="zone-desc">事业单位、高校、科研院所、企业的海洋岗位，一键筛出你够得着的。</p>
+  </div>
+  <div class="job-list-home" id="homeJobs">
+    <div class="loading">打捞中……</div>
+  </div>
+  <div class="load-more-wrap">
+    <a class="load-more" href="/jobs">查看全部岗位 →</a>
+  </div>
+</section>
+
+<!-- ======== 浅海：资讯中枢（含海纳解读） ======== -->
+<main class="zone zone-news" id="news">
+  <canvas id="jellyfishCanvas" class="jellyfish-canvas" aria-hidden="true"></canvas>
+  <div class="zone-head">
+    <h2 class="zone-title">海洋动态</h2>
+    <p class="zone-desc">海洋高校、科研院所与主管部门的官方动态，一站看全。点标题看原文。</p>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group" id="catTabs">
+      <button class="filter-btn active" data-cat="">全部</button>
+      <button class="filter-btn" data-cat="海纳解读">海纳解读</button>
+      <button class="filter-btn" data-cat="海纳科普">海纳科普</button>
+      <button class="filter-btn" data-cat="政策解读">政策解读</button>
+      <button class="filter-btn" data-cat="招聘公告">招聘公告</button>
+      <button class="filter-btn" data-cat="科研动态">科研动态</button>
+      <button class="filter-btn" data-cat="政策文件">政策文件</button>
+      <button class="filter-btn" data-cat="学校动态">学校动态</button>
+      <button class="filter-btn" data-cat="通知公告">通知公告</button>
+    </div>
+    <div class="filter-group" id="srcTabs">
+      <button class="filter-btn active" data-src="">全部来源</button>
+    </div>
+  </div>
+
+  <div class="news-grid" id="newsGrid">
+    <div class="loading">打捞中……</div>
+  </div>
+  <div class="load-more-wrap">
+    <a class="load-more" href="/news">查看全部动态 →</a>
+  </div>
+</main>
+
+<!-- ======== 中层：转行出路 ======== -->
+<section class="zone zone-transfer" id="transfer">
+  <div class="zone-head">
+    <h2 class="zone-title">转行出路</h2>
+    <p class="zone-desc">数据看现状，文章给方向。往哪转、怎么转，先看学长学姐真实去向。</p>
+    <a class="guide-entry" href="/guide">考证 · 实习 · 转方向指南 →</a>
+  </div>
+
+  <!-- 交互式转行图谱 -->
+  <div class="transfer-map-wrap">
+    <div class="transfer-map-head">
+      <h3 class="transfer-map-title">转行出路图谱</h3>
+      <p class="transfer-map-hint">点击节点，查看对应数据与去向</p>
+    </div>
+    <div class="transfer-map-body">
+      <div class="transfer-map-svg-box">
+        <svg id="transferMapSvg" aria-label="转行出路交互图谱"></svg>
+      </div>
+      <aside class="transfer-map-detail" id="transferMapDetail">
+        <div class="tm-detail-empty">
+          <div class="tm-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9c2.2 0 2.2-3 4.4-3s2.2 3 4.4 3 2.2-3 4.4-3 2.2 3 4.4 3"/><path d="M2 15c2.2 0 2.2-3 4.4-3s2.2 3 4.4 3 2.2-3 4.4-3 2.2 3 4.4 3"/></svg></div>
+          <p>点击左侧节点，查看这条出路的具体数据。</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="transfer-grid">
+    <!-- 左栏：数据可视化 -->
+    <div class="tf-left">
+      <div class="dash-card">
+        <h3 class="dash-title">行业去向 Top 5</h3>
+        <p class="dash-sub"><a href="https://xxgk.shou.edu.cn/2025/0219/c8041a337932/page.htm" target="_blank" rel="noopener">上海海洋大学 2024 届就业报告 ↗</a></p>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-label">制造业</span><span class="bar-track"><span class="bar-fill" style="width:21.45%"></span></span><b class="bar-val">21.45%</b></div>
+          <div class="bar-row"><span class="bar-label">信息传输、软件</span><span class="bar-track"><span class="bar-fill" style="width:11.06%"></span></span><b class="bar-val">11.06%</b></div>
+          <div class="bar-row"><span class="bar-label">科学研究、技术服务</span><span class="bar-track"><span class="bar-fill" style="width:10.75%"></span></span><b class="bar-val">10.75%</b></div>
+          <div class="bar-row"><span class="bar-label">租赁、商务服务</span><span class="bar-track"><span class="bar-fill" style="width:7.96%"></span></span><b class="bar-val">7.96%</b></div>
+          <div class="bar-row"><span class="bar-label">批发、零售</span><span class="bar-track"><span class="bar-fill" style="width:6.62%"></span></span><b class="bar-val">6.62%</b></div>
+        </div>
+        <button class="dash-expand" onclick="window.toggleIndustry()">查看完整 20 个行业分布 ↗</button>
+        <div id="fullIndustry" style="display:none">
+          <img src="/static/img/chart_industry_bachelor.png" alt="上海海洋大学 2024 届本科毕业生完整行业分布">
+          <p class="dash-note">来源：上海海洋大学 2024 届就业质量报告。</p>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <h3 class="dash-title">本科深造率（对照）</h3>
+        <p class="dash-sub">深造率越高，往往本科直接就业越难</p>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-label">中山大学海洋科学</span><span class="bar-track"><span class="bar-fill" style="width:80%"></span></span><b class="bar-val">80%+</b></div>
+          <div class="bar-row"><span class="bar-label">海洋科学与技术学院</span><span class="bar-track"><span class="bar-fill" style="width:49.25%"></span></span><b class="bar-val">49.25%</b></div>
+          <div class="bar-row"><span class="bar-label">船舶与海运学院</span><span class="bar-track"><span class="bar-fill" style="width:34.82%"></span></span><b class="bar-val">34.82%</b></div>
+          <div class="bar-row"><span class="bar-label">海洋工程装备学院</span><span class="bar-track"><span class="bar-fill" style="width:29.02%"></span></span><b class="bar-val">29.02%</b></div>
+          <div class="bar-row"><span class="bar-label">信息工程学院（对照）</span><span class="bar-track"><span class="bar-fill" style="width:19.89%"></span></span><b class="bar-val">19.89%</b></div>
+        </div>
+        <p class="dash-note">来源：<a href="https://marine.sysu.edu.cn/article/7887" target="_blank" rel="noopener">中山大学海洋科学学院 ↗</a>、<a href="https://pdf.gk100.com/employment/report/2023/20250412/ee2e46212c5386cf.pdf" target="_blank" rel="noopener">浙江海洋大学 2023 届报告 ↗</a></p>
+      </div>
+
+      <div class="dash-card">
+        <h3 class="dash-title">各专业薪资对比</h3>
+        <p class="dash-sub">海洋专业 vs 转行方向，应届起薪差多少</p>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-label">电子信息工程 · 应届</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><b class="bar-val">6.8K</b></div>
+          <div class="bar-row"><span class="bar-label">海洋技术 · 应届</span><span class="bar-track"><span class="bar-fill" style="width:94%"></span></span><b class="bar-val">6.4K</b></div>
+          <div class="bar-row"><span class="bar-label">海洋科学 · 应届</span><span class="bar-track"><span class="bar-fill" style="width:59%"></span></span><b class="bar-val">4.0K</b></div>
+          <div class="bar-row"><span class="bar-label">行政管理 · 应届</span><span class="bar-track"><span class="bar-fill" style="width:74%"></span></span><b class="bar-val">5.0K</b></div>
+        </div>
+        <a class="dash-expand" href="/salary" style="display:inline-block;margin-top:10px;">进入薪资看板（19 个专业） →</a>
+        <p class="dash-note" style="margin-top:8px;color:#F0A96A;">数据为高校就业报告/麦可思应届均值（全国本科平均 6199 元/月）。</p>
+      </div>
+    </div>
+
+    <!-- 右栏：转行文章 -->
+    <div class="tf-right">
+      <div class="dash-card tf-articles">
+        <h3 class="dash-title">转行文章</h3>
+        <div class="transfer-list" id="transferList">
+          <div class="loading">打捞中……</div>
+        </div>
+        <div class="transfer-pager" id="transferPager"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="load-more-wrap">
+    <a class="load-more" href="/transfer">查看全部出路 →</a>
+  </div>
+</section>
+
+<!-- ======== 暮光带：海域图鉴 ======== -->
+<section class="zone zone-community" id="ocean-entry">
+  <canvas id="whaleCanvas" class="whale-canvas" aria-hidden="true"></canvas>
+  <div class="zone-head">
+    <h2 class="zone-title">海域图鉴</h2>
+    <p class="zone-desc">点开一片海，看看那里正在发生什么。</p>
+  </div>
+  <div class="load-more-wrap">
+    <a class="load-more" href="/ocean">进入海域图鉴 →</a>
+  </div>
+</section>
+
+<!-- ======== 期刊分级 ======== -->
+<section class="zone zone-journals" id="journals">
+  <div class="zone-head">
+    <h2 class="zone-title">期刊分级</h2>
+    <p class="zone-desc">海洋学领域期刊分区速查，投稿选刊参考。</p>
+  </div>
+  <div class="journal-note">数据仍在收集中，分区以官方最新发布为准。</div>
+  <div class="journal-carousel" id="journalCarousel">
+    <button class="jc-arrow jc-prev" id="jcPrev" aria-label="上一个">‹</button>
+    <div class="jc-track" id="journalTrack">
+      <p class="journal-loading">期刊数据加载中…</p>
+    </div>
+    <button class="jc-arrow jc-next" id="jcNext" aria-label="下一个">›</button>
+  </div>
+  <div class="journal-more-wrap">
+    <a class="journal-more" href="/journals">查看全部期刊 →</a>
+  </div>
+</section>
+
+<!-- ======== 深渊：无光带 ======== -->
+<footer class="zone zone-abyss" id="abyss">
+  <div class="abyss-fade"></div>
+  <div class="abyss-glow"></div>
+  <h2 class="zone-title abyss-title">深海之下</h2>
+  <p class="abyss-text">海洋的最后一层，还没被人看懂。<br>海纳英才不着急，慢慢看。</p>
+  <div class="abyss-footer">
+    <span>海纳英才 · hainahub.cn</span>
+    <span>数据源：海洋高校 · 科研院所 · 主管部门官网</span>
+    <span class="credit-3d">3D &#x7d20;&#x6750;:&quot;Beach Bay&quot; by IForgetHowToRead(&#x0043;&#x0043; BY)&#x3001;via Sketchfab</span>
+    <span class="credit-3d">&#x9c7c;&#x7fa4;:&quot;Animated Swimming Tropical Fish School Loop&quot; by LasquetiSpice (CC BY)&#x3001;via Sketchfab</span>
+    <span class="credit-3d">&#x6c34;&#x6bcd;:&quot;Simple Jellyfish&quot; by RickStikkelorum (CC BY)&#x3001;via Sketchfab</span>
+    <span class="credit-3d">&#x9cb8;&#x9c7c;:&quot;Glow Whale&quot; by gavinpgamer1 (CC BY)&#x3001;via Sketchfab</span>
+    <a class="coffee-link" href="https://www.ifdian.net/a/lajiao01" target="_blank" rel="noopener">觉得有用？请我喝杯咖啡</a>
+    <a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">湘ICP备2026035763号</a>
+    <span>&copy; 2026 海纳英才</span>
+  </div>
+</footer>
+
+<!-- 登录/注册弹窗（全站共用） -->
+<div class="auth-modal" id="authModal" style="display:none">
+  <div class="auth-box">
+    <h2 id="authTitle">登录</h2>
+    <input type="text" id="authUsername" class="auth-input" placeholder="用户名（2-20 字符）" autocomplete="username">
+    <input type="password" id="authPassword" class="auth-input" placeholder="密码（至少 6 位）" autocomplete="current-password">
+    <input type="password" id="authPassword2" class="auth-input" placeholder="确认密码（再输一遍）" autocomplete="new-password" style="display:none;">
+    <div class="auth-actions">
+      <button id="authSubmit" class="auth-submit">登录</button>
+      <button id="authToggle" class="auth-cancel">去注册</button>
+    </div>
+    <a id="authForgot" class="auth-forgot" href="javascript:;" style="display:none;">忘记密码？</a>
+  </div>
+</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script defer src="/static/js/auth.js"></script>
+<script defer src="/static/js/app.js"></script>
+<script defer src="/static/js/transfer-map.js"></script>
+<script defer src="/static/js/animations.js"></script>
+{% include "_feedback.html" %}
+{% include "_perf_modal.html" %}
+
+<script src="/static/js/perf-mode.js" defer></script>
+<script src="/static/js/fishschool.js" defer></script>
+<script src="/static/js/jellyfish.js" defer></script>
+<script src="/static/js/whale.js" defer></script>
+<script src="/static/js/content-loading.js" defer></script>
+<script src="/static/js/journals.js" defer></script></body>
+</html>

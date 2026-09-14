@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>岗位对应表 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/job-map.css?v=20260831b">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<header class="topbar">
+  <a class="back" href="/content">← 首页</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">岗位对应表</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="job-map-body">
+  <div class="job-map-topbar">
+    <span class="title">岗位对应表</span>
+    <span class="label">选择专业：</span>
+    <select id="majorSelect"><option value="">加载中…</option></select>
+  </div>
+  <div class="job-map-main">
+    <div class="job-map-tree-area">
+      <div class="job-map-tree-title" id="treeTitle">岗位对应表</div>
+      <svg id="treeSvg" width="1000"></svg>
+    </div>
+    <div class="job-map-detail" id="detail">
+      <div class="index">SKILL</div>
+      <div class="placeholder">点击左侧技能节点，查看学习路径与履历要求</div>
+    </div>
+    <button class="job-map-close" id="detailClose" aria-label="关闭详情">×</button>
+  </div>
+</main>
+
+<script src="/static/js/job-map.js?v=20260831b"></script>
+</body>
+</html>

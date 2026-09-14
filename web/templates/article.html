@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ article.title }} - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/article.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg" id="oceanBg"></div>
+
+<main class="wrap">
+  <header class="article-head">
+    <a class="back" href="/content#news">← 返回动态</a>
+    <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+      <span class="logo-mark">{% include "_logo_white.html" %}</span>
+      <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+    </a>
+  </header>
+
+  <article class="article">
+    <div class="meta">
+      <span class="src-logo"><img src="{{ logo }}" alt="{{ article.source }}" onerror="this.parentNode.remove()"></span>
+      <span class="src-name">{{ article.source }}</span>
+      <span class="src-domain">{{ article.domain }}</span>
+      <span class="date">{{ article.date }}</span>
+    </div>
+    <h1 class="title">{{ article.title }}</h1>
+    {% if article.content %}
+    <div class="article-body">
+      {{ article.content | safe }}
+      <p class="body-note">本文为海纳英才基于官方政策原文的解读，引用原文均标注链接，仅供参考。</p>
+    </div>
+    {% endif %}
+    <div class="actions">
+      <a class="btn-origin" href="{{ article.url }}" target="_blank" rel="noopener">查看原文 →</a>
+    </div>
+
+    {% if related %}
+    <div class="related">
+      <h3 class="related-title">相关文章</h3>
+      <ul class="related-list">
+        {% for r in related %}
+        <li><a href="/article/{{ r.id }}">{{ r.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </article>
+
+  <div class="article-coffee">
+    <a href="https://www.ifdian.net/a/lajiao01" target="_blank" rel="noopener">觉得有用？请我喝杯咖啡</a>
+  </div>
+
+</main>
+
+<div class="lightbox" id="lightbox"><img id="lightboxImg" alt=""></div>
+
+<script>
+// 正文图片自动加图注：alt 文字渲染成图片下方小字
+document.querySelectorAll('.article-body img[alt]').forEach(function (img) {
+  var alt = img.getAttribute('alt').trim();
+  if (!alt) return;
+  var fig = document.createElement('figure');
+  fig.className = 'article-figure';
+  var cap = document.createElement('figcaption');
+  cap.textContent = alt;
+  img.parentNode.insertBefore(fig, img);
+  fig.appendChild(img);
+  fig.appendChild(cap);
+});
+
+// 图片点击看大图
+var lb = document.getElementById('lightbox');
+var lbImg = document.getElementById('lightboxImg');
+document.querySelectorAll('.article-body img[src]').forEach(function (img) {
+  img.addEventListener('click', function () {
+    lbImg.src = img.src;
+    lb.classList.add('open');
+  });
+});
+lb.addEventListener('click', function () { lb.classList.remove('open'); });
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') lb.classList.remove('open');
+});
+</script>
+{% include "_feedback.html" %}
+</body>
+</html>

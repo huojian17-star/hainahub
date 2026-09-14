@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海纳 Logo 预览 · Mavis</title>
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: #f5f5f5;
+    color: #333;
+  }
+  .page-head {
+    padding: 28px 40px 22px;
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-head h1 { font-size: 18px; font-weight: 600; letter-spacing: 0.06em; }
+  .page-head .meta { font-size: 12px; color: #888; display: flex; gap: 14px; }
+  .page-head .meta code { background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 11px; }
+
+  .scene {
+    padding: 60px 40px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .scene-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+    font-family: ui-monospace, monospace;
+    text-transform: uppercase;
+  }
+  .scene-desc { font-size: 13px; opacity: 0.7; margin-top: 6px; line-height: 1.6; max-width: 280px; }
+
+  /* 场景 1：首页 hero 浅色背景 */
+  .scene-hero {
+    background: linear-gradient(180deg, #7EC8E3 0%, #2E8BC0 100%);
+    color: #0A2A45;
+  }
+  .scene-hero .scene-label { color: #0A2A45; opacity: 0.55; }
+
+  /* 场景 2：资讯页深色顶部条 */
+  .scene-news {
+    background: linear-gradient(180deg, #0E2540 0%, #081A2C 60%, #02050D 100%);
+    color: #fff;
+  }
+  .scene-news .scene-label { color: #fff; opacity: 0.45; }
+
+  /* 场景 3：深渊（最暗） */
+  .scene-abyss {
+    background: #02050D;
+    color: #A8F0F2;
+  }
+  .scene-abyss .scene-label { color: #A8F0F2; opacity: 0.5; }
+
+  /* 尺寸变体 */
+  .size-row {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+  .size-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .size-cell .label { font-size: 10px; opacity: 0.55; letter-spacing: 0.1em; }
+
+  /* 静态对比块 */
+  .static-compare {
+    background: #fff;
+    padding: 36px 40px;
+    border-radius: 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .static-compare h2 { font-size: 14px; font-weight: 600; margin-bottom: 18px; letter-spacing: 0.06em; }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px;
+  }
+  .compare-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .compare-card .title { font-size: 13px; font-weight: 600; }
+  .compare-card .sub { font-size: 11px; color: #888; }
+  .compare-card .preview {
+    width: 100%;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .preview-light { background: #7EC8E3; }
+  .preview-dark { background: linear-gradient(180deg, #0E2540, #02050D); }
+  .preview-abyss { background: #02050D; }
+
+  .compare-card img {
+    height: 60px;
+    width: auto;
+  }
+
+  /* 大图特写 */
+  .feature {
+    padding: 70px 40px;
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .feature h2 { font-size: 14px; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.06em; }
+  .feature p { font-size: 12px; color: #888; margin-bottom: 30px; }
+  .feature-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .feature-zoom {
+    width: 240px;
+    height: 200px;
+    background: linear-gradient(180deg, #7EC8E3, #2E8BC0);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .feature-zoom .logo-mark {
+    width: 180px;
+    height: 144px;
+  }
+
+  /* 动效说明 */
+  .motion-list {
+    background: #fff;
+    padding: 30px 40px;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+  .motion-list h2 { font-size: 14px; margin-bottom: 14px; letter-spacing: 0.06em; }
+  .motion-list ul { list-style: none; columns: 2; column-gap: 30px; }
+  .motion-list li { padding: 4px 0; }
+  .motion-list li b { color: #1E6FD9; font-weight: 600; }
+
+  .tip {
+    background: #FFFBE6;
+    border: 1px solid #FFE58F;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #6B5B00;
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+</style>
+{% include "_analytics.html" %}
+</head>
+<body>
+
+<header class="page-head">
+  <h1>海纳 Logo · 预览</h1>
+  <div class="meta">
+    <span>SVG 重绘版（基于设计稿元素）</span>
+    <code>/preview</code>
+  </div>
+</header>
+
+<!-- 场景 1：首页 hero 浅色背景 -->
+<section class="scene scene-hero">
+  <a class="brand-logo" href="/" aria-label="海纳首页">
+    <span class="logo-mark">{% include "_logo_color.html" %}</span>
+    <span class="logo-text">海纳<span class="logo-en">Haina</span></span>
+  </a>
+  <div>
+    <div class="scene-label">SCENE 01 · 首页导航（浅色背景）</div>
+    <div class="scene-desc">亮蓝天 + 海面，logo 用品牌渐变蓝。灯塔光束旋转、星辰闪烁、海浪双层流动。</div>
+  </div>
+</section>
+
+<!-- 场景 2：资讯页深色 -->
+<section class="scene scene-news">
+  <a class="brand-logo topbar-brand" href="/news" aria-label="资讯">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳<span class="logo-en">Haina</span></span>
+  </a>
+  <div>
+    <div class="scene-label">SCENE 02 · 资讯页顶栏（深色背景）</div>
+    <div class="scene-desc">深海蓝渐变背景，logo 用白色为主。H 字母也维持白色实心。</div>
+  </div>
+</section>
+
+<!-- 场景 3：深渊（最暗） -->
+<section class="scene scene-abyss">
+  <a class="brand-logo topbar-brand" href="#abyss" aria-label="深海">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳<span class="logo-en">Haina</span></span>
+  </a>
+  <div>
+    <div class="scene-label">SCENE 03 · 深海页（最暗）</div>
+    <div class="scene-desc">无光带。灯塔光束的暖光在黑底上更显眼，灯塔光晕脉动承担主要的"活感"。</div>
+  </div>
+</section>
+
+<!-- 尺寸变体 -->
+<section class="scene scene-hero" style="background: linear-gradient(180deg, #B5DDEF 0%, #5BA9D8 100%);">
+  <div class="size-row">
+    <div class="size-cell">
+      <span class="logo-mark" style="width: 28px; height: 22px;">{% include "_logo_color.html" %}</span>
+      <span class="label">28px · 顶栏移动端</span>
+    </div>
+    <div class="size-cell">
+      <span class="logo-mark" style="width: 44px; height: 36px;">{% include "_logo_color.html" %}</span>
+      <span class="label">44px · 导航默认</span>
+    </div>
+    <div class="size-cell">
+      <span class="logo-mark" style="width: 64px; height: 52px;">{% include "_logo_color.html" %}</span>
+      <span class="label">64px · 大尺寸</span>
+    </div>
+    <div class="size-cell">
+      <span class="logo-mark" style="width: 96px; height: 78px;">{% include "_logo_color.html" %}</span>
+      <span class="label">96px · 启动页</span>
+    </div>
+  </div>
+</section>
+
+<!-- 静态对比（动效前后对比看） -->
+<section class="static-compare">
+  <h2>静态参考（用 img 标签，无 CSS 动效）</h2>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="title">主 logo · 彩色版</div>
+      <div class="sub">logo.svg</div>
+      <div class="preview preview-light">
+        <img src="/static/img/logo.svg" alt="logo">
+      </div>
+    </div>
+    <div class="compare-card">
+      <div class="title">主 logo · 反白版</div>
+      <div class="sub">logo-white.svg</div>
+      <div class="preview preview-dark">
+        <img src="/static/img/logo-white.svg" alt="logo">
+      </div>
+    </div>
+    <div class="compare-card">
+      <div class="title">Favicon</div>
+      <div class="sub">favicon.svg</div>
+      <div class="preview preview-abyss">
+        <img src="/static/img/favicon.svg" alt="favicon" style="height: 80px;">
+      </div>
+    </div>
+  </div>
+  <div class="tip">
+    注意：上面三张静态图用 <code>&lt;img src="logo.svg"&gt;</code> 引用，CSS 动效不起作用，SVG 内部的 SMIL 元素才生效（当前 SVG 没内嵌 SMIL）。下面场景块的 SVG 是内嵌到 HTML 的，CSS 动效完全生效。
+  </div>
+</section>
+
+<!-- 大图特写 -->
+<section class="feature">
+  <h2>细节特写 · 灯塔光束</h2>
+  <p>把 logo 放大到 180×144px，看清灯塔光束的扇形投射 + 灯塔光晕的渐变 + 星辰的旋转。</p>
+  <div class="feature-row">
+    <div class="feature-zoom">
+      <span class="logo-mark">{% include "_logo_color.html" %}</span>
+    </div>
+    <div class="feature-zoom" style="background: linear-gradient(180deg, #0E2540, #02050D);">
+      <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    </div>
+  </div>
+</section>
+
+<!-- 动效清单 -->
+<section class="motion-list">
+  <h2>动效清单（hover 任意 logo 元素可加速）</h2>
+  <ul>
+    <li><b>灯塔光束</b> · 9s 一周旋转（双扇形轮流照）</li>
+    <li><b>灯塔光晕</b> · 2.6s 脉动（scale 0.92↔1.18 + opacity 0.55↔1）</li>
+    <li><b>灯塔内灯</b> · 1.6s 闪烁（模拟灯泡不稳定）</li>
+    <li><b>星辰</b> · 2.8s 旋转 + 缩放（带 45° 翻转）</li>
+    <li><b>海浪前层</b> · 3.2s 横向流动</li>
+    <li><b>海浪后层</b> · 4.6s 反向流动（更慢，营造层次）</li>
+    <li><b>入场</b> · 海浪笔触绘制 + 灯塔光束延迟出现</li>
+    <li><b>文字 hover</b> · 颜色过渡到 teal（0.3s）</li>
+    <li><b>hover 加速</b> · 所有动效时长缩短 50% 左右</li>
+    <li><b>prefers-reduced-motion</b> · 用户偏好减弱动效时自动停止</li>
+  </ul>
+</section>
+
+{% include "_feedback.html" %}
+</body>
+</html>

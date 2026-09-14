@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海纳 · 动态 logo demo</title>
+<style>
+  body { margin: 0; min-height: 100vh; background: #02050D; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, sans-serif; }
+  .box { text-align: center; }
+  svg { width: 240px; height: 240px; }
+  .tip { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 18px; letter-spacing: 1px; }
+
+  /* 水流：描边画出动画 */
+  .flow {
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    animation: draw 1.6s ease-out forwards;
+  }
+  .f1 { stroke: #2FD4DA; stroke-width: 11; animation-delay: 0s; }
+  .f2 { stroke: #0FB5BA; stroke-width: 11; animation-delay: 0.25s; }
+  .f3 { stroke: #7FE7EA; stroke-width: 9; animation-delay: 0.5s; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  /* 汇聚点：水流完成后浮现 + 呼吸 */
+  .dot {
+    fill: #0FB5BA;
+    opacity: 0;
+    transform-origin: 120px 180px;
+    animation: appear 0.5s ease-out 1.5s forwards, breathe 2.4s ease-in-out 2s infinite;
+  }
+  @keyframes appear { to { opacity: 1; } }
+  @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+
+  /* 涟漪 */
+  .ring {
+    fill: none; stroke: #2FD4DA; stroke-width: 2;
+    transform-origin: 120px 180px;
+    opacity: 0;
+    animation: ripple 2.6s ease-out 2s infinite;
+  }
+  @keyframes ripple {
+    0% { transform: scale(0.3); opacity: 0.8; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="box">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7FE7EA"/><stop offset="1" stop-color="#0FB5BA"/>
+        </linearGradient>
+      </defs>
+      <path class="flow f1" d="M30 40 C 90 85 95 120 120 160"/>
+      <path class="flow f2" d="M210 40 C 150 85 145 120 120 160"/>
+      <path class="flow f3" d="M120 18 C 120 65 120 110 120 160"/>
+      <circle class="ring" cx="120" cy="180" r="18"/>
+      <circle class="dot" cx="120" cy="180" r="15" fill="url(#g1)"/>
+    </svg>
+    <div class="tip">海纳百川 · 汇聚</div>
+  </div>
+</body>
+</html>

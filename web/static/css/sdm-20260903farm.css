@@ -1,0 +1,104 @@
+/* 海纳 · 物种分布预测（SDM）—— 独立页 */
+.sdm-body { position: relative; height: calc(100vh - 71px); overflow: hidden; }
+#sdmMap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.sdm-panel {
+  position: absolute; top: 60px; left: 16px; z-index: 1000;
+  background: #fff; padding: 16px 20px; border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12); max-width: 340px;
+  max-height: calc(100vh - 110px); overflow-y: auto;
+}
+.sdm-panel.hidden { display: none !important; }
+.map-approval {
+  position: absolute; left: 50%; transform: translateX(-50%); bottom: 8px; z-index: 900;
+  font-size: 11px; color: #1A2A3A;
+  background: linear-gradient(135deg, rgba(200, 225, 245, 0.82), rgba(150, 190, 230, 0.72));
+  -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 6px; padding: 4px 8px;
+  pointer-events: auto; line-height: 1.5; white-space: nowrap; max-width: 90%;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.map-approval a { color: #0A5A7A; text-decoration: none; border-bottom: 1px dashed rgba(10, 90, 122, 0.4); }
+.map-approval a:hover { color: #0A7A9A; }
+.species-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+.species-tab { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; color: #555; font-size: 13px; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+.species-tab.active { background: #4299E0; color: #fff; border-color: #4299E0; }
+.sdm-panel h1 { font-size: 18px; margin: 0 0 4px; color: #1A3A5C; }
+.sdm-panel .sp { color: #4299E0; font-size: 14px; margin: 0 0 10px; }
+.sdm-panel p { font-size: 13px; color: #555; line-height: 1.6; margin: 0 0 8px; }
+.sdm-feat-title { font-size: 13px; color: #555; margin: 10px 0 6px; font-weight: 600; }
+.sdm-feat-opt { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #444; margin: 4px 0; cursor: pointer; }
+.sdm-feat-opt input { cursor: pointer; }
+.sdm-sample-note { margin-top: 10px; padding: 8px 10px; border-radius: 8px; background: #FFF8E1; font-size: 12px; color: #7A5C00; line-height: 1.5; }
+.sdm-prob-box { margin-top: 10px; padding: 12px; border-radius: 8px; background: #4299E0; text-align: center; }
+.sdm-prob-box .sdm-prob-num { font-size: 32px; font-weight: 700; color: #fff; }
+.sdm-prob-box .sdm-prob-lbl { font-size: 12px; color: rgba(255,255,255,0.85); }
+.sdm-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-top: 6px; margin-right: 4px; }
+.sdm-tag.sdm-realtime { background: #F2D143; color: #7A5C00; }
+.sdm-tag.sdm-low { background: #D82036; color: #fff; }
+.sdm-tag.sdm-mid { background: #F2D143; color: #7A5C00; }
+.sdm-tag.sdm-high { background: #4299E0; color: #fff; }
+.sdm-divider { border: none; border-top: 1px solid #eee; margin: 12px 0; }
+.sdm-slider-title { font-size: 13px; color: #555; margin-bottom: 8px; }
+.sdm-slider-row { margin: 8px 0; }
+.sdm-slider-row label { font-size: 12px; color: #555; display: block; margin-bottom: 2px; }
+.sdm-slider-row input { width: 100%; }
+.sdm-slider-row .val { font-size: 12px; color: #1A3A5C; }
+.sdm-note { font-size: 11px; color: #999; margin-top: 12px; }
+/* 物种选择器 */
+.sdm-species-select { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: #555; }
+.sdm-species-select select {
+  flex: 1; padding: 6px 8px; border: 1px solid #4299E0; border-radius: 8px;
+  font-size: 13px; color: #1A3A5C; background: #fff; cursor: pointer; outline: none;
+}
+/* 多物种对比（竞争释放） */
+#sdmCompare { margin-top: 8px; }
+#sdmCompare canvas {
+  display: block; width: 100%; margin-bottom: 8px; border: 1px solid #eee; border-radius: 8px;
+  background: #fafcff;
+}
+#sdmCompare canvas.sdm-chart-sst { border-left: 3px solid #D82036; }
+#sdmCompare canvas.sdm-chart-depth { border-left: 3px solid #4299E0; }
+#sdmCompareInsight { background: #F0F7FF; padding: 8px 10px; border-radius: 8px; }
+#sdmExplainResult { white-space: pre-wrap; line-height: 1.7; padding: 12px 14px; background: #F7FAFF; border-radius: 8px; font-size: 14px; color: #1a2b45; }
+#sdmExplainResult p { margin: 0 0 10px 0; }
+/* AI 生态解读弹窗 */
+.sdm-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; }
+.sdm-modal-backdrop { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); }
+.sdm-modal-box { position: relative; width: min(820px, 92vw); max-height: 86vh; background: #fff; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; }
+.sdm-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #e5ecf5; background: #F0F7FF; }
+.sdm-modal-title { font-size: 16px; font-weight: 600; color: #1A3A5C; }
+.sdm-modal-close { border: none; background: transparent; font-size: 24px; line-height: 1; color: #5a6f8a; cursor: pointer; padding: 0 4px; }
+.sdm-modal-close:hover { color: #D82036; }
+.sdm-modal-body { padding: 18px 22px; overflow-y: auto; white-space: pre-wrap; line-height: 1.8; font-size: 15px; color: #1a2b45; }
+/* 加载提示 spinner */
+.sdm-loading-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #4299E0; border-top-color: transparent; border-radius: 50%; animation: sdm-spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes sdm-spin { to { transform: rotate(360deg); } }
+/* AI 生成标识（合规：第12条 内容标识） */
+.sdm-ai-badge { display: inline-block; font-size: 11px; font-weight: 500; color: #fff; background: #4299E0; border-radius: 4px; padding: 1px 6px; vertical-align: middle; margin-left: 6px; }
+/* 弹窗底部：模型基底说明（合规：第17条 模型来源） */
+.sdm-modal-foot { padding: 10px 22px; border-top: 1px solid #e5ecf5; font-size: 12px; color: #8a9bb0; background: #F7FAFF; }
+
+/* ===== 智渔牧海：tab 切换 + 牧场水质监测预警 ===== */
+.sdm-tabs { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; gap: 8px; }
+.sdm-tab { padding: 8px 18px; border: 1px solid #ddd; border-radius: 20px; background: rgba(255,255,255,0.92); color: #555; font-size: 13px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.sdm-tab.active { background: #4299E0; color: #fff; border-color: #4299E0; }
+.sdm-farm-panel { width: 340px; }
+.farm-points { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.farm-point { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border: 1px solid #e5ecf5; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #fff; }
+.farm-point:hover { border-color: #4299E0; background: #F0F7FF; }
+.farm-point.selected { border-color: #4299E0; background: #E6F2FF; }
+.farm-point .fp-name { font-size: 13px; color: #1A3A5C; }
+.farm-point .fp-prov { font-size: 11px; color: #8a9bb0; }
+.farm-detail { background: #F7FAFF; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+.farm-detail-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.farm-detail-head b { font-size: 14px; color: #1A3A5C; }
+.farm-score { font-size: 12px; color: #4299E0; font-weight: 600; }
+.farm-metrics { display: flex; gap: 16px; margin-bottom: 8px; }
+.farm-metrics .fm { display: flex; flex-direction: column; }
+.farm-metrics .fm-k { font-size: 11px; color: #8a9bb0; }
+.farm-metrics .fm-v { font-size: 16px; font-weight: 600; color: #1A3A5C; }
+.farm-alerts { display: flex; flex-direction: column; gap: 4px; }
+.farm-alert { padding: 6px 8px; border-radius: 6px; font-size: 12px; line-height: 1.5; }
+.farm-alert.red { background: #FDE8E8; color: #C0392B; }
+.farm-alert.yellow { background: #FFF8E1; color: #7A5C00; }
+.farm-alert.ok { background: #E8F8E8; color: #2E7D32; }

@@ -1,0 +1,326 @@
+/* 海纳 · 转行出路交互图谱（呼吸感版） */
+.transfer-map-wrap {
+  margin: 40px 0 24px;
+  position: relative;
+}
+
+.transfer-map-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-bottom: 8px;
+}
+
+.transfer-map-title {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.transfer-map-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
+}
+
+.transfer-map-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+  gap: 32px;
+  min-height: 460px;
+  position: relative;
+}
+
+.transfer-map-svg-box {
+  position: relative;
+  min-height: 420px;
+}
+
+.transfer-map-svg-box svg {
+  display: block;
+  width: 100%;
+  height: 440px;
+}
+
+/* 节点：纤细、通透 */
+.tm-node {
+  cursor: pointer;
+}
+.tm-node:focus {
+  outline: none;
+}
+
+.tm-shape {
+  fill: rgba(255, 255, 255, 0.06);
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 1;
+  transition: stroke 300ms, fill 300ms, opacity 300ms, transform 300ms;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.tm-node:hover .tm-shape {
+  transform: scale(1.15);
+  stroke: #fff;
+}
+
+/* 2026-08-23：鱼图——默认放大到 1.35 倍（清晰可见），hover 靠近再放大到 1.50 */
+.tm-fish {
+  transform: scale(1.35);
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+  cursor: pointer;
+}
+.tm-node:hover .tm-fish {
+  transform: scale(1.50);
+}
+.tm-label {
+  transform: scale(1.35);
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.tm-node:hover .tm-label {
+  transform: scale(1.50);
+}
+
+.tm-node[data-state="muted"] .tm-shape {
+  opacity: 0.15;
+}
+
+.tm-node[data-state="active"] .tm-shape {
+  fill: rgba(56, 229, 236, 0.15);
+  stroke: var(--accent);
+}
+
+.tm-node[data-type="root"] .tm-shape {
+  fill: rgba(56, 229, 236, 0.32);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+
+/* 2026-08-23：副节点 Lucide 图标（线条风格，和连线/几何形状统一） */
+.tm-hit {
+  fill: transparent;
+  pointer-events: all;   /* 扩大点击区域，副节点图标小也好点中 */
+}
+.tm-lucide {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 300ms;
+}
+.tm-node:hover .tm-lucide {
+  stroke: #fff;
+}
+.tm-node[data-state="active"] .tm-lucide {
+  stroke: var(--accent);
+}
+.tm-node[data-state="muted"] .tm-lucide {
+  opacity: 0.55;
+}
+
+/* 2026-08-23：root（海洋专业）帆船图标——最华丽（发光/渐变，突出中心节点） */
+.tm-node[data-type="root"] .tm-lucide {
+  stroke: var(--accent);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px rgba(56, 229, 236, 0.6));
+}
+.tm-node[data-type="root"] .tm-lucide path {
+  fill: rgba(56, 229, 236, 0.18);
+}
+
+/* 连线：细但可见 + 虚线流动（能量从中心流向节点） */
+.tm-link {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 0.9;
+  stroke-dasharray: 5 5;
+  fill: none;
+  transition: stroke 300ms, opacity 300ms;
+  animation: tmFadeIn 800ms ease-out forwards, tmLinkFlow 3.5s linear infinite;
+}
+@keyframes tmLinkFlow {
+  to { stroke-dashoffset: -20; }
+}
+
+.tm-link[data-state="muted"] {
+  opacity: 0.08;
+}
+
+/* 标签：轻、小、透气 */
+.tm-label {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 11px;
+  fill: rgba(255, 255, 255, 0.88);
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 300ms, fill 300ms;
+  letter-spacing: 0.01em;
+}
+
+.tm-node[data-state="muted"] .tm-label {
+  opacity: 0.55;   /* 2026-08-23：0.15 太淡（隐形），改 0.55 能看清 */
+}
+
+.tm-node[data-state="active"] .tm-label {
+  fill: var(--accent);
+  font-weight: 500;
+}
+
+.tm-node[data-type="root"] .tm-label {
+  fill: #fff;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.tm-num {
+  font-size: 10px;
+  fill: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 入场动画：节点逐个浮现 */
+.tm-node {
+  opacity: 0;
+  animation: tmFadeIn 600ms ease-out forwards;
+}
+
+.tm-link {
+  opacity: 0;
+  animation: tmFadeIn 800ms ease-out forwards, tmLinkFlow 3.5s linear infinite;
+}
+
+@keyframes tmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 右侧详情面板：无框、极简 */
+.transfer-map-detail {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 400px;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  padding-left: 32px;
+}
+
+.tm-detail-empty {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: left;
+}
+
+.tm-detail-empty .tm-empty-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.tm-detail-title {
+  font-size: 17px;
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 4px;
+  letter-spacing: 0.01em;
+}
+
+.tm-detail-sub {
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tm-detail-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+.tm-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tm-detail-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.tm-detail-item .k {
+  flex: 0 0 76px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+}
+
+.tm-detail-item .v {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.tm-detail-link {
+  display: inline-block;
+  margin-top: auto;
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid rgba(56, 229, 236, 0.3);
+  padding-bottom: 2px;
+  transition: border-color 200ms;
+}
+
+.tm-detail-link:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .transfer-map-body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .transfer-map-detail {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-left: 0;
+    padding-top: 20px;
+    min-height: auto;
+  }
+  .transfer-map-svg-box svg {
+    height: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transfer-map-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .transfer-map-svg-box svg {
+    height: 300px;
+  }
+  .tm-label {
+    font-size: 10px;
+  }
+  .transfer-map-detail {
+    padding-top: 16px;
+  }
+}

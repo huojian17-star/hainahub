@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>海域图鉴 · 海纳英才</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+  <link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+  <link rel="stylesheet" href="/static/css/auth.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/static/css/ocean-20260936.css">
+  <link rel="stylesheet" href="/static/css/ocean-tools.css">
+  <link rel="stylesheet" href="/static/css/sdm.css?v=20260906">
+{% include "_analytics.html" %}
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="/content#ocean-entry" style="color:#0A5A7A;text-decoration:none;font-size:14px;margin-right:12px;">← 返回</a>
+    <a class="brand-logo" href="/" aria-label="海纳英才首页">
+      <span class="logo-mark">{% include "_logo_color.html" %}</span>
+      <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+    </a>
+    <span class="brand">海域图鉴</span>
+    <span class="sub">点一片海，看它在发生什么</span>
+    <button id="avatarBtn" class="avatar-btn" title="上传头像" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+    <button id="authBtn" class="topbar-auth" style="display:none">登录</button>
+    <button id="uploadOpen" class="topbar-upload">投稿上地图</button>
+    <button class="topbar-tools" id="toolsFab" title="海洋计算工具箱" aria-label="打开海洋计算工具箱">工具箱</button>
+    <button class="topbar-tools" id="graticuleBtn" title="显示/隐藏经纬线" aria-label="切换经纬线">经纬线</button>
+    <div class="basemap-wrap">
+      <button class="topbar-tools" id="basemapBtn" title="切换底图" aria-label="切换底图">底图·干净</button>
+      <div class="basemap-menu hidden" id="basemapMenu">
+        <div class="basemap-option" data-idx="0">标准（带地名）</div>
+        <div class="basemap-option" data-idx="1">卫星图</div>
+        <div class="basemap-option" data-idx="2">干净（无地名）</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="ocean-mode-bar">
+    <button class="ocean-mode-btn active" id="modeAtlas" data-mode="atlas">图鉴</button>
+    <button class="ocean-mode-btn" id="modeTide" data-mode="tide">潮汐表</button>
+    <button class="ocean-mode-btn" id="modeFlow" data-mode="flow">洋流</button>
+    <button class="ocean-mode-btn" id="modeGfs" data-mode="gfs">风场</button>
+    <button class="ocean-mode-btn" id="modeSst" data-mode="sst">SST</button>
+    <button class="ocean-mode-btn" id="modeSss" data-mode="sss">盐度</button>
+    <button class="ocean-mode-btn" id="modeCurrent" data-mode="current">流速</button>
+    <button class="ocean-mode-btn" id="modeChl" data-mode="chl">叶绿素</button>
+    <button class="ocean-mode-btn" id="modeTyphoon" data-mode="typhoon">台风</button>
+    <button class="ocean-mode-btn" id="modeCloud" data-mode="cloud">云图</button>
+    <button class="ocean-mode-btn" id="modeExpert" data-mode="expert">机构</button>
+    <button class="ocean-mode-btn" id="modeBathy" data-mode="bathy">地形</button>
+    <button class="ocean-mode-btn" id="modeSpecies" data-mode="species">生物</button>
+    <select class="typhoon-year" id="typhoonYear" style="display:none" title="选择台风年份"></select>
+    <select class="flow-time" id="flowTime" style="display:none" title="选择洋流时间">
+      <option value="now">当前</option>
+    </select>
+    <!-- SST 时间选择（过去24h至未来7天逐小时） -->
+    <div class="sst-time-wrap" id="sstTimeWrap" style="display:none">
+      <button class="sst-play-btn" id="sstPlayBtn" title="自动播放海温变化" aria-label="自动播放海温变化"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+      <input class="sst-time-range" id="sstTimeRange" type="range" min="-24" max="168" step="1" value="0" title="选择 SST 时次">
+      <span class="sst-time-label" id="sstTimeLabel">当前</span>
+    </div>
+    <!-- 叶绿素日期选择（最近有数据日往前） -->
+    <div class="chl-time-wrap" id="chlTimeWrap" style="display:none">
+      <select class="chl-time-select" id="chlTimeSelect" title="选择叶绿素日期"></select>
+    </div>
+    <input class="tide-search" id="tideSearch" type="text" placeholder="搜索港口，如「塘沽」「青岛」" style="display:none" autocomplete="off">
+    <div class="tide-suggest" id="tideSuggest" style="display:none"></div>
+  </div>
+
+  <div class="ocean-layout">
+    <div id="map"></div>
+    <div class="typhoon-panel hidden" id="typhoonPanel">
+      <div class="tp-panel-head">
+        <span>台风列表</span>
+        <span class="tp-head-btns">
+          <button class="tp-collapse-btn" id="tpResetBtn" title="重置为默认（只显示当前活动台风）">重置</button>
+          <button class="tp-collapse-btn" id="tpCollapseBtn" title="收起台风列表">收起</button>
+        </span>
+      </div>
+      <div class="typhoon-list" id="typhoonList"><p class="typhoon-loading">加载中…</p></div>
+    </div>
+    <button class="typhoon-toggle hidden" id="typhoonToggle" title="展开台风列表">台风</button>
+    <div class="typhoon-timeline hidden" id="typhoonTimeline">
+      <div class="tt-name" id="ttName"></div>
+      <input class="tt-range" id="ttRange" type="range" min="0" max="0" step="1" value="0">
+      <div class="tt-info" id="ttInfo"></div>
+    </div>
+    <div class="typhoon-news hidden" id="typhoonNews">
+      <div class="typhoon-news-head">实时动态</div>
+      <div class="typhoon-news-list" id="typhoonNewsList"><p class="typhoon-news-empty">暂无相关资讯</p></div>
+    </div>
+    <div class="cloud-timeline hidden" id="cloudTimeline">
+      <div class="tt-name">全球红外云图（GEOS-IRX）</div>
+      <input class="tt-range" id="cloudRange" type="range" min="0" max="0" step="1" value="0">
+      <div class="tt-info" id="cloudInfo"></div>
+    </div>
+    <!-- OceanExpert 机构/专家名录（海纳后端代理，用户不碰官网） -->
+    <div class="expert-panel hidden" id="expertPanel">
+      <div class="expert-panel-head">
+        <span class="expert-panel-title" id="expertPanelTitle">OceanExpert 名录</span>
+        <button class="expert-panel-close" id="expertPanelClose" title="关闭">×</button>
+      </div>
+      <div class="expert-panel-tabs">
+        <button class="expert-tab active" data-etype="institutions">机构</button>
+        <button class="expert-tab" data-etype="experts">专家</button>
+      </div>
+      <div class="expert-search-wrap">
+        <input class="expert-search" id="expertSearch" type="text" placeholder="搜索国家，如 China、Japan" autocomplete="off">
+        <div class="expert-suggest" id="expertSuggest" style="display:none"></div>
+      </div>
+      <div class="expert-panel-sub" id="expertPanelSub">点击地图上的国家圆点，查看该国海洋机构/专家</div>
+      <div class="expert-panel-list" id="expertPanelList"></div>
+      <div class="expert-panel-pager" id="expertPanelPager"></div>
+    </div>
+    <!-- 海洋生物图鉴（WoRMS 分类 + Wikimedia CC 图片 + OBIS 分布） -->
+    <div class="species-panel hidden" id="speciesPanel">
+      <div class="species-panel-head">
+        <span class="species-panel-title">海洋生物图鉴</span>
+        <button class="species-panel-close" id="speciesPanelClose" title="关闭">×</button>
+      </div>
+      <div class="species-tabs">
+        <button class="species-tab active" id="speciesTabAtlas" data-tab="atlas">物种图鉴</button>
+        <a class="species-tab" id="speciesTabSdm" href="/ocean-sdm">分布预测</a>
+      </div>
+      <div class="species-search-wrap">
+        <input class="species-search" id="speciesSearch" type="text" placeholder="搜索物种，如「鲸」「鲨」「海豚」" autocomplete="off">
+      </div>
+      <div class="species-cascader" id="speciesCascader">
+        <select class="species-cascader-select" id="cascaderPhylum" data-rank="phylum"><option value="">门（全部）</option></select>
+        <select class="species-cascader-select" id="cascaderClass" data-rank="class" disabled><option value="">纲（全部）</option></select>
+        <select class="species-cascader-select" id="cascaderOrdr" data-rank="ordr" disabled><option value="">目（全部）</option></select>
+        <select class="species-cascader-select" id="cascaderFamily" data-rank="family" disabled><option value="">科（全部）</option></select>
+      </div>
+      <div class="species-panel-sub" id="speciesPanelSub">点击物种卡片，查看图片、分类与分布</div>
+      <div class="species-list" id="speciesList"><p class="species-loading">加载中…</p></div>
+
+
+    </div>
+      
+
+    <!-- 物种详情弹窗（点击卡片弹出，居中显示） -->
+    <div class="species-modal hidden" id="speciesDetail">
+      <div class="species-modal-box">
+        <button class="species-modal-close" id="speciesDetailClose" title="关闭">×</button>
+        <div class="species-detail-body" id="speciesDetailBody"></div>
+      </div>
+    </div>
+    <div class="flow-loading hidden" id="flowLoading">
+      <span class="flow-loading-spinner"></span>
+      <span id="flowLoadingText">洋流加载中…</span>
+    </div>
+    <div class="flow-loading hidden" id="chlLoading">
+      <span class="flow-loading-spinner"></span>
+      <span>叶绿素加载中…</span>
+    </div>
+    <div class="flow-loading hidden" id="bathyLoading">
+      <span class="flow-loading-spinner"></span>
+      <span>地形加载中…</span>
+    </div>
+    <div class="map-tip" id="mapTip">看到有意思的海？点右上角「投稿上地图」，上传照片和位置，审核通过后刊登</div>
+    <div class="legend hidden" id="sstLegend">
+      <div class="legend-title">SST（°C）</div>
+      <div class="legend-bar sst-bar"></div>
+      <div class="legend-labels"><span>-2</span><span>8</span><span>16</span><span>24</span><span>30</span></div>
+    </div>
+    <div class="legend hidden" id="chlLegend">
+      <div class="legend-title">叶绿素（mg/m³）</div>
+      <div class="legend-bar chl-bar"></div>
+      <div class="legend-labels"><span>0.01</span><span>0.5</span><span>2</span><span>10</span><span>50</span></div>
+    </div>
+    <div class="legend hidden" id="sssLegend">
+      <div class="legend-title">盐度（PSU）</div>
+      <div class="legend-bar sss-bar"></div>
+      <div class="legend-labels"><span>30</span><span>33</span><span>35</span><span>37</span><span>40</span></div>
+    </div>
+    <div class="legend hidden" id="currentLegend">
+      <div class="legend-title">流速（m/s）</div>
+      <div class="legend-bar current-bar"></div>
+      <div class="legend-labels"><span>0</span><span>0.5</span><span>1</span><span>1.5</span><span>2+</span></div>
+    </div>
+    <div class="legend hidden" id="bathyLegend">
+      <div class="legend-title">水深（m）</div>
+      <div class="legend-bar bathy-bar"></div>
+      <div class="legend-labels"><span>0</span><span>200</span><span>1000</span><span>5000</span><span>10000+</span></div>
+    </div>
+    <div class="flow-source hidden" id="flowSource">
+      洋流数据：<a href="https://polar.ncep.noaa.gov/global/" target="_blank" rel="noopener">NOAA Global RTOFS</a>（全球实时洋流预报）· 仅供参考
+    </div>
+
+    <!-- 地图审图号（高德地图合规标注，常驻左下角） -->
+    <div class="map-approval" id="mapApproval">地图数据 © <a href="https://www.amap.com/" target="_blank" rel="noopener">高德地图</a> · 审图号 GS(2023)551号（普通）/ GS(2023)4047号（卫星）</div>
+
+    <!-- 海洋计算工具箱（侧边栏小工具，纯前端，零外部依赖） -->
+    <aside class="tools-panel hidden" id="toolsPanel">
+      <div class="tools-head">
+        <span class="tools-title">海洋计算工具箱</span>
+        <button class="tools-close" id="toolsClose" title="关闭">×</button>
+      </div>
+      <div class="tools-tabs">
+        <button class="tools-tab active" data-tab="coord">经纬度</button>
+        <button class="tools-tab" data-tab="speed">航速</button>
+        <button class="tools-tab" data-tab="depth">深度·盐度</button>
+      </div>
+
+      <!-- 经纬度 DMS ↔ DD -->
+      <div class="tools-body" data-pane="coord">
+        <div class="tools-row">
+          <label class="tools-label">十进制度 (DD)</label>
+          <input class="tools-input" id="coordDD" type="text" placeholder="如 120.2583" autocomplete="off">
+          <div class="tools-dir">
+            <span>纬度方向</span>
+            <select class="tools-select" id="coordLatDir"><option value="N">北纬 N</option><option value="S">南纬 S</option></select>
+            <span>经度方向</span>
+            <select class="tools-select" id="coordLonDir"><option value="E">东经 E</option><option value="W">西经 W</option></select>
+          </div>
+        </div>
+        <button class="tools-btn" id="coordDDtoDMS">DD → DMS</button>
+        <div class="tools-result" id="coordDMSResult">—</div>
+        <div class="tools-note">原理：1° = 60′，1′ = 60″。十进制度取整为度，小数 ×60 取整为分，余数 ×60 为秒。DD→DMS 用于坐标记录，DMS→DD 用于 GIS 软件输入。</div>
+        <div class="tools-divider"></div>
+        <div class="tools-row">
+          <label class="tools-label">度分秒 (DMS)</label>
+          <div class="tools-dms">
+            <input class="tools-input tools-dms-in" id="dmsDeg" type="text" placeholder="度" autocomplete="off">
+            <input class="tools-input tools-dms-in" id="dmsMin" type="text" placeholder="分" autocomplete="off">
+            <input class="tools-input tools-dms-in" id="dmsSec" type="text" placeholder="秒" autocomplete="off">
+          </div>
+        </div>
+        <button class="tools-btn" id="coordDMStoDD">DMS → DD</button>
+        <div class="tools-result" id="coordDDResult">—</div>
+        <div class="tools-note">原理：DD = 度 + 分/60 + 秒/3600。方向（N/S/E/W）决定正负，北/东为正，南/西为负。</div>
+      </div>
+
+      <!-- 航速换算：节 / m/s / km/h -->
+      <div class="tools-body hidden" data-pane="speed">
+        <div class="tools-row">
+          <label class="tools-label">输入航速</label>
+          <input class="tools-input" id="speedVal" type="text" placeholder="输入数值" autocomplete="off">
+          <select class="tools-select" id="speedUnit">
+            <option value="knot">节 (Knots)</option>
+            <option value="ms">米/秒 (m/s)</option>
+            <option value="kmh">公里/小时 (km/h)</option>
+          </select>
+        </div>
+        <button class="tools-btn" id="speedConv">换算</button>
+        <div class="tools-result" id="speedResult">—</div>
+        <div class="tools-note">原理：1 节 = 1 海里/小时 = 1852 m / 3600 s ≈ 0.5144 m/s ≈ 1.852 km/h。海里是航海常用长度单位，1 海里 = 1852 m。</div>
+      </div>
+
+      <!-- 深度·盐度换算 -->
+      <div class="tools-body hidden" data-pane="depth">
+        <div class="tools-row">
+          <label class="tools-label">深度 ↔ 水压</label>
+          <input class="tools-input" id="depthVal" type="text" placeholder="输入数值" autocomplete="off">
+          <select class="tools-select" id="depthUnit">
+            <option value="m">深度 (m)</option>
+            <option value="dbar">水压 (dbar)</option>
+          </select>
+        </div>
+        <button class="tools-btn" id="depthConv">换算</button>
+        <div class="tools-result" id="depthResult">—</div>
+        <div class="tools-note">原理：1 dbar = 10000 Pa，水压 = 密度 × g × 深度。按海水平均密度 1025 kg/m³、g = 9.80665 m/s²，1 dbar ≈ 0.995 m（近似，未计海水压缩性）。</div>
+        <div class="tools-divider"></div>
+        <div class="tools-row">
+          <label class="tools-label">盐度 PSU ↔ ‰</label>
+          <input class="tools-input" id="salVal" type="text" placeholder="输入数值" autocomplete="off">
+        </div>
+        <button class="tools-btn" id="salConv">换算</button>
+        <div class="tools-result" id="salResult">—</div>
+        <div class="tools-note">实用盐度 PSU 与千分比 ‰ 数值等价（1 PSU ≈ 1 ‰）</div>
+      </div>
+    </aside>
+
+    <aside class="ocean-detail hidden" id="detail">
+      <button class="detail-close" id="detailClose" title="关闭">×</button>
+      <div class="detail-empty">
+        <p class="empty-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9c2.2 0 2.2-3 4.4-3s2.2 3 4.4 3 2.2-3 4.4-3 2.2 3 4.4 3"/><path d="M2 15c2.2 0 2.2-3 4.4-3s2.2 3 4.4 3 2.2-3 4.4-3 2.2 3 4.4 3"/></svg></p>
+        <p>点地图上的锚点，看这片海域的日常。</p>
+        <p class="empty-sub">不止是风景，还有这片海的单位、课题组、岗位。</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+    <span class="lightbox-close" title="关闭">×</span>
+    <div class="lightbox-hint">点击任意处关闭</div>
+  </div>
+
+  <!-- 登录/注册弹窗（全站共用） -->
+  <div class="auth-modal" id="authModal" style="display:none">
+    <div class="auth-box">
+      <h2 id="authTitle">登录</h2>
+      <input type="text" id="authUsername" class="auth-input" placeholder="用户名（2-20 字符）" autocomplete="username">
+      <input type="password" id="authPassword" class="auth-input" placeholder="密码（至少 6 位）" autocomplete="current-password">
+      <input type="password" id="authPassword2" class="auth-input" placeholder="确认密码（再输一遍）" autocomplete="new-password" style="display:none;">
+      <div class="auth-actions">
+        <button id="authSubmit" class="auth-submit">登录</button>
+        <button id="authToggle" class="auth-cancel">去注册</button>
+      </div>
+      <a id="authForgot" class="auth-forgot" href="javascript:;" style="display:none;">忘记密码？</a>
+    </div>
+  </div>
+
+  <!-- 投稿弹窗（PGC 投稿制：web 表单填写 → 后端代发邮件到站长邮箱 → 审核后刊登，合规） -->
+  <div class="modal" id="uploadModal">
+    <div class="modal-box">
+      <h2>投稿一片海</h2>
+      <p class="modal-tip">选照片 + 填地址，投稿给我们。审核通过后，会刊登到海域图鉴。</p>
+      <p class="submit-notice">投稿须知：投稿内容将由管理员审核后选择性刊登；投稿即代表授权本站非商用展示；请勿发送侵权、隐私、违规内容，不合规稿件不予采用。</p>
+      <input type="file" id="postImage" accept="image/*" class="modal-file">
+      <textarea id="postText" class="modal-input" rows="3" placeholder="想说的话（可留空）"></textarea>
+      <div class="region-row">
+        <select id="postProv" class="modal-input region-select"><option value="">省份</option></select>
+        <select id="postCity" class="modal-input region-select"><option value="">城市</option></select>
+        <select id="postDistrict" class="modal-input region-select"><option value="">区县</option></select>
+      </div>
+      <input type="text" id="postDetail" class="modal-input" placeholder="详细地址，如：第一海水浴场">
+      <div id="postMap" class="post-map"></div>
+      <input type="text" id="postEmail" class="modal-input" placeholder="你的邮箱（选填，方便我们回复）">
+      <!-- 蜜罐字段：爬虫会填，正常用户看不到 -->
+      <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="modal-actions">
+        <button id="postSubmit" class="modal-submit">投稿</button>
+        <button id="uploadClose" class="modal-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="{{ url_for('static', filename='js/leaflet-wind-20260827.js') }}"></script>
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/ocean-20260944.js"></script>
+<script src="/static/js/sdm.js?v=20260906"></script>
+  <script src="/static/js/ocean-tools.js"></script>
+{% include "_feedback.html" %}
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ m.name }} - 考证·实习·转方向 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/guide.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/guide">← 全部专业</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">{{ m.name }}</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="wrap guide-wrap">
+  <div class="guide-head">
+    <h1>{{ m.name }}</h1>
+    <p class="guide-sub">{{ m.intro }}</p>
+  </div>
+
+  <section class="detail-section">
+    <h2 class="detail-h">能考的证</h2>
+    {% for c in m.certs %}
+    <div class="cert-card">
+      <h3 class="cert-title">{{ c.name }}</h3>
+      <dl class="cert-dl">
+        <div class="cert-row"><dt>是什么</dt><dd>{{ c.what }}</dd></div>
+        <div class="cert-row"><dt>考什么</dt><dd>{{ c.exam }}</dd></div>
+        <div class="cert-row"><dt>怎么考</dt><dd>{{ c.how }}</dd></div>
+        <div class="cert-row"><dt>报考条件</dt><dd>{{ c.cond }}</dd></div>
+        <div class="cert-row"><dt>有什么用</dt><dd>{{ c.use }}</dd></div>
+      </dl>
+      <a class="cert-link" href="{{ c.url }}" target="_blank" rel="noopener">官方文件 ↗</a>
+    </div>
+    {% endfor %}
+  </section>
+
+  <section class="detail-section">
+    <h2 class="detail-h">能实习的领域</h2>
+    {% for it in m.internships %}
+    <div class="plain-item">
+      <h3 class="plain-name">{{ it.name }}</h3>
+      <p class="plain-detail">{{ it.detail }}</p>
+    </div>
+    {% endfor %}
+  </section>
+
+  <section class="detail-section">
+    <h2 class="detail-h">能转的方向</h2>
+    {% for t in m.transfers %}
+    <div class="plain-item">
+      <h3 class="plain-name">{{ t.name }}</h3>
+      <p class="plain-detail">{{ t.detail }}</p>
+    </div>
+    {% endfor %}
+  </section>
+
+  <p class="guide-foot">报考条件以官方当年文件为准，链接可核。</p>
+</main>
+{% include "_feedback.html" %}
+</body>
+</html>

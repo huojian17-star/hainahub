@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海纳英才 · 海洋大数据资源池</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  background: #081A2C;
+  color: #E8F1F8;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+/* 背景：深海蓝分层，无边框，靠色块区分层级 */
+.ocean-bg {
+  position: fixed; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, #0B1F35 0%, #081A2C 55%, #04101D 100%);
+}
+
+.topbar {
+  display: flex; align-items: center; gap: 24px;
+  padding: 18px 40px;
+  border-bottom: 1px solid rgba(232,241,248,0.08);
+  position: sticky; top: 0;
+  background: rgba(8,26,44,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+.back { color: rgba(232,241,248,0.6); text-decoration: none; font-size: 13px; letter-spacing: 0.02em; }
+.back:hover { color: #fff; }
+.brand { display: flex; align-items: baseline; gap: 8px; }
+.brand .logo-text { font-size: 19px; font-weight: 650; letter-spacing: 0.04em; color: #fff; }
+.brand .logo-text .logo-en { font-size: 11px; opacity: 0.45; margin-left: 6px; font-weight: 400; letter-spacing: 0.12em; }
+.topbar-section { font-size: 12px; opacity: 0.5; letter-spacing: 0.14em; text-transform: uppercase; }
+.top-spacer { flex: 1; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 48px 40px 96px; }
+
+/* 总览：左对齐，非居中 */
+.hero { margin-bottom: 56px; }
+.hero .eyebrow { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7FD4F5; margin-bottom: 14px; font-weight: 500; }
+.hero h1 { font-size: 34px; font-weight: 650; line-height: 1.25; letter-spacing: -0.01em; margin-bottom: 16px; color: #fff; }
+.hero .sub { font-size: 15px; color: rgba(232,241,248,0.62); line-height: 1.75; max-width: 640px; }
+.hero .sub strong { color: #B8E6F8; font-weight: 550; }
+
+/* 指标：主次分明，非 4 等权重卡片 */
+.metrics {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 1px;
+  background: rgba(232,241,248,0.07); /* 细线分隔，非卡片边框 */
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 36px;
+}
+.metric { padding: 22px 24px; background: #0B1F35; }
+.metric .num { font-size: 34px; font-weight: 650; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
+.metric .lbl { font-size: 12px; color: rgba(232,241,248,0.5); margin-top: 8px; letter-spacing: 0.04em; }
+.metric.primary { background: #0E2A47; }
+.metric.primary .num { color: #7FD4F5; font-size: 40px; }
+
+/* 区块标题：左对齐，字重+字距控制层级，非超大 */
+.section-title {
+  font-size: 17px; font-weight: 650; margin: 56px 0 8px; color: #fff; letter-spacing: 0.01em;
+}
+.section-desc { font-size: 13px; color: rgba(232,241,248,0.5); margin-bottom: 28px; line-height: 1.6; }
+
+/* 数据集：行式列表（数据页密度），非圆角卡片 */
+.dataset-list { border-top: 1px solid rgba(232,241,248,0.1); }
+.dataset-row {
+  border-bottom: 1px solid rgba(232,241,248,0.07);
+  padding: 18px 0;
+  cursor: pointer;
+  transition: background .15s;
+}
+.dataset-row:hover { background: rgba(127,212,245,0.04); }
+.dataset-row .row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.dataset-row .row-title { font-size: 15px; font-weight: 550; color: #fff; }
+.dataset-row .row-type { font-size: 11px; color: #7FD4F5; letter-spacing: 0.06em; white-space: nowrap; }
+.dataset-row .row-desc { font-size: 13px; color: rgba(232,241,248,0.55); line-height: 1.6; margin-top: 6px; }
+.dataset-row .row-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; }
+.row-meta .m { font-size: 12px; color: rgba(232,241,248,0.5); }
+.row-meta .m b { color: rgba(232,241,248,0.82); font-weight: 500; font-variant-numeric: tabular-nums; }
+.dataset-row .row-detail {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(232,241,248,0.07);
+  display: none;
+}
+.dataset-row.open .row-detail { display: block; }
+.row-detail .d-line { display: flex; gap: 10px; font-size: 13px; margin-bottom: 8px; }
+.row-detail .d-line .k { color: rgba(232,241,248,0.42); min-width: 76px; }
+.row-detail .d-line .v { color: rgba(232,241,248,0.85); word-break: break-all; }
+
+/* Agent 接口：深色面板，无圆角卡片感 */
+.api-panel {
+  background: #0B1F35;
+  border-radius: 4px;
+  padding: 28px;
+}
+.api-panel .panel-label { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(232,241,248,0.45); margin-bottom: 18px; }
+.query-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.query-row input {
+  background: #04101D;
+  border: 1px solid rgba(232,241,248,0.14);
+  border-radius: 4px;
+  padding: 10px 14px;
+  color: #E8F1F8;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .15s;
+}
+.query-row input:focus { border-color: #7FD4F5; }
+.query-row input::placeholder { color: rgba(232,241,248,0.32); }
+.query-row input#qSpecies { flex: 1; min-width: 200px; }
+.query-row input#qBbox { flex: 1.4; min-width: 260px; }
+.btn {
+  background: #2E7CC4; color: #fff; border: none; border-radius: 4px;
+  padding: 10px 22px; font-size: 14px; cursor: pointer; transition: background .15s;
+}
+.btn:hover { background: #3B8CD8; }
+.api-result {
+  background: #04101D;
+  border-radius: 4px;
+  padding: 18px;
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #9fd4f0;
+  max-height: 420px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.code-block {
+  background: #04101D;
+  border-radius: 4px;
+  padding: 18px;
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #9fd4f0;
+  overflow: auto;
+  white-space: pre-wrap;
+  margin-top: 20px;
+}
+.code-block .cmt { color: rgba(232,241,248,0.35); }
+.code-block .cmd { color: #7FD4F5; }
+
+/* 标准化说明：行式，无卡片边框 */
+.std-list { border-top: 1px solid rgba(232,241,248,0.1); }
+.std-item {
+  display: flex; gap: 18px; align-items: flex-start;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(232,241,248,0.07);
+}
+.std-item .icon { margin-top: 2px; flex-shrink: 0; }
+.std-item .t { font-size: 15px; font-weight: 550; color: #fff; margin-bottom: 5px; }
+.std-item .d { font-size: 13px; color: rgba(232,241,248,0.55); line-height: 1.65; }
+
+.foot { text-align: left; color: rgba(232,241,248,0.32); font-size: 12px; margin-top: 72px; letter-spacing: 0.02em; }
+
+@media (max-width: 768px) {
+  .topbar { padding: 14px 20px; gap: 14px; }
+  .wrap { padding: 32px 20px 64px; }
+  .hero h1 { font-size: 26px; }
+  .metrics { grid-template-columns: 1fr 1fr; }
+  .metric.primary { grid-column: span 2; }
+}
+
+/* 区块链存证展示 */
+.chain-panel {
+  margin-top: 28px; padding: 20px 24px;
+  background: rgba(0, 22, 44, 0.45); border: 1px solid rgba(127, 212, 245, 0.16);
+  border-radius: 4px;
+}
+.chain-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.chain-title { font-size: 16px; font-weight: 600; color: #fff; }
+.chain-sub { font-size: 12px; color: rgba(232,241,248,0.55); margin-top: 4px; }
+.chain-status {
+  font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 4px; white-space: nowrap;
+  background: rgba(127, 212, 245, 0.12); color: #7FD4F5;
+}
+.chain-status.valid { background: rgba(63, 220, 160, 0.14); color: #3FDCA0; }
+.chain-status.invalid { background: rgba(255, 90, 90, 0.16); color: #FF6A6A; }
+.chain-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+.chain-block {
+  display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+  background: rgba(0, 32, 62, 0.5); border-radius: 4px;
+  border-left: 3px solid #7FD4F5;
+}
+.cb-idx { font-size: 12px; font-weight: 700; color: #7FD4F5; min-width: 30px; }
+.cb-body { flex: 1; min-width: 0; }
+.cb-data { font-size: 12px; color: rgba(232,241,248,0.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cb-hash { font-size: 11px; color: rgba(232,241,248,0.45); font-family: ui-monospace, monospace; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/">← 海纳英才首页</a>
+  <div class="brand">
+    <span class="logo-text">海纳英才<span class="logo-en">HAINA</span></span>
+  </div>
+  <span class="topbar-section">Ocean Data Hub</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="wrap">
+  <!-- 总览 -->
+  <section class="hero">
+    <div class="eyebrow">Ocean Data Hub</div>
+    <h1>海洋大数据资源池</h1>
+    <p class="sub">
+      海纳英才把多源多模态的海洋数据（物种分布、环境因子、出现点）融合成一套标准化的资源池，
+      支持<strong>多要素时空关联分析</strong>，并提供标准接口让<strong>AI Agent 可直接消费</strong>。
+      数据对标 STAC / OGC / Darwin Core 标准，开放、可溯源。
+    </p>
+    <div class="metrics">
+      <div class="metric primary"><div class="num" id="statDatasets">—</div><div class="lbl">数据集</div></div>
+      <div class="metric"><div class="num" id="statSpecies">—</div><div class="lbl">示范物种</div></div>
+      <div class="metric"><div class="num" id="statRes">—</div><div class="lbl">目标分辨率</div></div>
+      <div class="metric"><div class="num" id="statSources">—</div><div class="lbl">数据源</div></div>
+    </div>
+    <a class="btn" href="/ocean-sdm" style="display:inline-block;margin-top:14px;">场景化应用：智渔牧海 · 海洋牧场水质监测与生态位预警 →</a>
+  </section>
+
+  <!-- 数据集列表 -->
+  <h2 class="section-title">数据集清单</h2>
+  <div class="section-desc">海纳英才已建成对多种海洋物种的 SDM 分布建模、预测与大模型解读流程，以下为已建成的示范物种及环境数据。</div>
+  <div class="dataset-list" id="cards"></div>
+
+  <!-- Agent 接口演示 -->
+  <h2 class="section-title">Agent 接口演示</h2>
+  <div class="section-desc">标准接口，Agent 可发现、查询、消费数据。</div>
+  <div class="api-panel">
+    <div class="panel-label">按条件查询</div>
+    <div class="query-row">
+      <input id="qSpecies" placeholder="按物种查询，如 haddock / cod">
+      <input id="qBbox" placeholder="按空间范围查询，如 40,-70,60,0（lat_min,lon_min,lat_max,lon_max）">
+      <button class="btn" onclick="doSearch()">查询</button>
+    </div>
+    <div class="api-result" id="apiResult">点击「查询」或先加载数据集清单，查看接口返回</div>
+    <div class="code-block"><span class="cmt"># 1. 发现海纳英才有哪些海洋数据</span>
+<span class="cmd">GET /api/ocean/collections</span>
+
+<span class="cmt"># 2. 按物种 + 空间范围查询（Agent 消费数据）</span>
+<span class="cmd">GET /api/ocean/search?species=haddock&bbox=40,-70,60,0</span>
+
+<span class="cmt"># 3. 返回结构化数据（带元数据，Agent 可解析）</span>
+<span class="cmd">{"ok": true, "count": 1, "results": [{"id": "sdm-species-haddock", ...}]}</span>
+
+<span class="cmt"># 4. 牧场水质生态位预警（实时水质喂当季 SDM 模型，输出鱼种适宜性变化 + AI 解读）</span>
+<span class="cmd">GET /api/ocean/ecowarn?lat=30.8&lon=122.7&species=xiaohuangyu</span></div>
+  </div>
+
+  <!-- 标准化说明 -->
+  <h2 class="section-title">数据标准化与可信溯源</h2>
+  <div class="section-desc">数据标准统一，AI 可直接消费；区块链存证，数据可信。</div>
+  <div class="std-list">
+    <div class="std-item">
+      <span class="icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7FD4F5" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></span>
+      <div><div class="t">统一空间分辨率</div><div class="d">中国鱼种季节模型已达 0.1°（约 11km）网格，大西洋物种为 1°，正统一推进到 0.1°，对齐 Carbon Monitor 等国际数据标准。</div></div>
+    </div>
+    <div class="std-item">
+      <span class="icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7FD4F5" stroke-width="1.6"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+      <div><div class="t">标准坐标系与元数据</div><div class="d">统一 EPSG:4326 坐标系，每个数据集带完整元数据（来源/分辨率/单位/license），数据标准统一，AI 可直接消费。</div></div>
+    </div>
+    <div class="std-item">
+      <span class="icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7FD4F5" stroke-width="1.6"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg></span>
+      <div><div class="t">开源标准兼容</div><div class="d">对标 STAC（地理空间目录）、OGC API（空间查询）、Darwin Core（生物多样性）标准，可被第三方工具直接读取。</div></div>
+    </div>
+    <div class="std-item">
+      <span class="icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7FD4F5" stroke-width="1.6"><rect x="4" y="3" width="7" height="7" rx="1.5"/><rect x="13" y="14" width="7" height="7" rx="1.5"/><path d="M8 10v4a2 2 0 0 0 2 2h3"/></svg></span>
+      <div><div class="t">区块链可信存证</div><div class="d">海洋数据按 0.05° 网格哈希上链（本地哈希链），数据可溯源、不可篡改。</div></div>
+    </div>
+  </div>
+
+  <!-- 区块链存证展示（AI+大数据+区块链架构） -->
+  <div class="chain-panel">
+    <div class="chain-head">
+      <div>
+        <div class="chain-title">海洋数据区块链存证</div>
+        <div class="chain-sub">SHA-256 哈希链接，数据可溯源、不可篡改，守护海洋数据安全</div>
+      </div>
+      <div class="chain-status" id="chainStatus">—</div>
+    </div>
+    <div class="chain-list" id="chainList">加载中…</div>
+  </div>
+
+  <div class="foot">海洋大数据资源池 · 数据源：OBIS / NOAA ERDDAP</div>
+</main>
+
+<script>
+var TYPE_NAMES = { sdm: "物种分布", env: "环境因子", occurrence: "出现点", species: "物种图鉴" };
+
+function loadCollections() {
+  fetch('/api/ocean/collections')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var cols = d.collections || [];
+      renderStats(cols);
+      renderCards(cols);
+    })
+    .catch(function(e){
+      document.getElementById('apiResult').textContent = '// 加载失败: ' + e;
+    });
+}
+
+function renderStats(cols) {
+  var speciesSet = {};
+  cols.forEach(function(c){
+    if (c.type === 'sdm' && c.id && c.id.indexOf('sdm-species-') === 0) { speciesSet[c.id.split('-')[2]] = true; }
+  });
+  var species = Object.keys(speciesSet).length;
+  var sources = {};
+  cols.forEach(function(c){ sources[c.source] = true; });
+  document.getElementById('statDatasets').textContent = cols.length;
+  document.getElementById('statSpecies').textContent = species;
+  document.getElementById('statRes').textContent = '0.1°';  document.getElementById('statSources').textContent = Object.keys(sources).length;
+}
+
+function renderCards(cols) {
+  var html = '';
+  cols.forEach(function(c){
+    var typeName = TYPE_NAMES[c.type] || c.type;
+    var src = c.source ? c.source.replace(/[+&]/g, ' ') : '—';
+    html += '<div class="dataset-row" onclick="this.classList.toggle(\'open\')">'
+      + '<div class="row-head"><span class="row-title">' + esc(c.title) + '</span>'
+      + '<span class="row-type">' + esc(typeName) + '</span></div>'
+      + '<div class="row-desc">' + esc(c.description || '') + '</div>'
+      + '<div class="row-meta">'
+      + '<span class="m">分辨率 <b>' + esc(c.resolution || '—') + '</b>' + (c.type === 'sdm' ? '（目标 0.1°）' : '') + '</span>'
+      + '<span class="m">来源 <b>' + esc(src) + '</b></span>'
+      + '<span class="m">License <b>' + esc(c.license || '—') + '</b></span>'
+      + '</div>'
+      + '<div class="row-detail">'
+      + '<div class="d-line"><span class="k">数据集 ID</span><span class="v">' + esc(c.id) + '</span></div>'
+      + '<div class="d-line"><span class="k">坐标系</span><span class="v">' + esc(c.crs || '—') + '</span></div>'
+      + '<div class="d-line"><span class="k">时间范围</span><span class="v">' + esc(c.time_range || '—') + '</span></div>'
+      + '<div class="d-line"><span class="k">出现点数</span><span class="v">' + (c.n_occ || '—') + '</span></div>'
+      + '<div class="d-line"><span class="k">数据文件</span><span class="v">' + esc(c.pred_file || '—') + '</span></div>'
+      + '</div></div>';
+  });
+  document.getElementById('cards').innerHTML = html;
+}
+
+function doSearch() {
+  var species = document.getElementById('qSpecies').value.trim();
+  var bbox = document.getElementById('qBbox').value.trim();
+  var q = '/api/ocean/search?';
+  var params = [];
+  if (species) params.push('species=' + encodeURIComponent(species));
+  if (bbox) params.push('bbox=' + encodeURIComponent(bbox));
+  q += params.join('&');
+  document.getElementById('apiResult').textContent = '// 请求: ' + q + '\n// 加载中…';
+  fetch(q)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      document.getElementById('apiResult').textContent =
+        '// 请求: ' + q + '\n// 返回 ' + d.count + ' 个数据集\n\n' + JSON.stringify(d, null, 2);
+    })
+    .catch(function(e){
+      document.getElementById('apiResult').textContent = '// 查询失败: ' + e;
+    });
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
+}
+
+// 区块链存证：加载区块列表 + 验证链
+function loadChain() {
+  var statusEl = document.getElementById('chainStatus');
+  var listEl = document.getElementById('chainList');
+  fetch('/api/chain')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d.ok) { listEl.textContent = '加载失败：' + (d.error || '未知'); return; }
+      statusEl.textContent = d.valid ? '链可信 ✓' : '链被篡改 ✗';
+      statusEl.className = 'chain-status ' + (d.valid ? 'valid' : 'invalid');
+      if (!d.blocks.length) { listEl.textContent = '链为空（创世块待建）'; return; }
+      var html = '';
+      d.blocks.slice().reverse().forEach(function(b){
+        var dataStr = (typeof b.data === 'object') ? JSON.stringify(b.data) : String(b.data);
+        html += '<div class="chain-block">' +
+          '<div class="cb-idx">#' + b.index + '</div>' +
+          '<div class="cb-body">' +
+          '<div class="cb-data">' + esc(dataStr.slice(0, 60)) + '</div>' +
+          '<div class="cb-hash">' + esc(b.hash.slice(0, 18)) + '…</div>' +
+          '</div></div>';
+      });
+      listEl.innerHTML = html;
+    })
+    .catch(function(e){ listEl.textContent = '加载失败：' + e; });
+}
+
+loadCollections();
+loadChain();
+</script>
+</body>
+</html>

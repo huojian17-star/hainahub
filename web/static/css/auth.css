@@ -1,0 +1,122 @@
+/* 海纳公共登录组件样式（首页 + 海域图鉴共用） */
+.topbar-auth {
+  background: #2FD4DA;
+  color: #042E2B;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.topbar-auth:hover { background: #3FE0E6; }
+.topbar-auth.logged { background: transparent; color: #FFFFFF; border: none; padding: 0; }
+.topbar-auth .topbar-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* 登录/注册弹窗 */
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 12, 20, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1600;
+}
+.auth-modal.open { display: flex; }
+.auth-box {
+  width: 340px;
+  max-width: 92vw;
+  background: #0E2540;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.auth-box h2 { font-size: 20px; font-weight: 700; color: #E6EDF3; }
+.auth-input {
+  background: #081A2C;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 11px 12px;
+  color: #E6EDF3;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+.auth-input::placeholder { color: #6B7A8C; }
+.auth-input:focus { border-color: #2FD4DA; }
+
+/* 忘记密码链接 */
+.auth-forgot {
+  font-size: 13px;
+  color: #2FD4DA;
+  text-decoration: none;
+  text-align: right;
+}
+.auth-forgot:hover { text-decoration: underline; }
+
+/* 注册头像选择器（圆形头像框 + 预览） */
+.avatar-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+.avatar-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  background: #123A5F;
+  position: relative;
+}
+.avatar-circle:hover { border-color: #2FD4DA; }
+.avatar-placeholder { font-size: 28px; color: rgba(255, 255, 255, 0.5); }
+.avatar-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+.avatar-picker-tip { font-size: 12px; color: #A8B8C8; }
+.auth-actions { display: flex; gap: 10px; }
+.auth-submit {
+  flex: 1;
+  background: #2FD4DA;
+  color: #042E2B;
+  border: none;
+  border-radius: 6px;
+  padding: 11px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.auth-submit:disabled { opacity: 0.6; }
+.auth-cancel {
+  padding: 11px 16px;
+  background: transparent;
+  color: #A8B8C8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}

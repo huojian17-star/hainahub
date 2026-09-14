@@ -1,0 +1,63 @@
+{# 海纳 · Logo 彩色版（用于浅色背景） #}
+<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="lhc-h" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1E6FD9"/>
+      <stop offset="100%" stop-color="#0B2D5B"/>
+    </linearGradient>
+    <linearGradient id="lhc-wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1E6FD9"/>
+      <stop offset="50%" stop-color="#3DC7F4"/>
+      <stop offset="100%" stop-color="#1E6FD9"/>
+    </linearGradient>
+    <radialGradient id="lhc-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFE9A6" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#FFD06B" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#FFD06B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lhc-beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFE9A6" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#FFE9A6" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 灯塔光束（旋转） -->
+  <g class="light-beam">
+    <path d="M 120 36 L 60 -8 L 75 -8 L 122 38 Z" fill="url(#lhc-beam)"/>
+    <path d="M 120 36 L 180 -8 L 165 -8 L 118 38 Z" fill="url(#lhc-beam)"/>
+  </g>
+
+  <!-- 灯塔 -->
+  <g class="lighthouse">
+    <path d="M 112 96 L 128 96 L 132 110 L 108 110 Z" fill="#0B2D5B"/>
+    <rect x="111" y="40" width="18" height="62" fill="url(#lhc-h)" rx="2"/>
+    <rect x="111" y="62" width="18" height="6" fill="#0B2D5B" opacity="0.6"/>
+    <rect x="111" y="84" width="18" height="6" fill="#0B2D5B" opacity="0.6"/>
+    <rect x="116" y="70" width="8" height="11" fill="#FFE9A6"/>
+    <rect x="116" y="70" width="8" height="11" fill="none" stroke="#0B2D5B" stroke-width="1.2"/>
+    <rect x="108" y="30" width="24" height="12" fill="#0B2D5B" rx="2"/>
+    <circle cx="120" cy="36" r="3.2" fill="#FFEDB5"/>
+    <path d="M 108 30 L 120 14 L 132 30 Z" fill="#0B2D5B"/>
+    <line x1="120" y1="14" x2="120" y2="6" stroke="#0B2D5B" stroke-width="2"/>
+    <circle cx="120" cy="5" r="2.5" fill="#3DC7F4"/>
+    <g class="lighthouse-glow">
+      <ellipse cx="120" cy="36" rx="36" ry="18" fill="url(#lhc-glow)"/>
+    </g>
+  </g>
+
+  <!-- H 字母 -->
+  <rect x="46" y="40" width="18" height="68" fill="url(#lhc-h)" rx="2"/>
+  <rect x="64" y="68" width="47" height="11" fill="url(#lhc-h)" rx="2"/>
+
+  <!-- 星辰 -->
+  <g class="star" transform="translate(72, 28)">
+    <path d="M 0 -10 L 2.2 -2.2 L 10 0 L 2.2 2.2 L 0 10 L -2.2 2.2 L -10 0 L -2.2 -2.2 Z" fill="#3DC7F4"/>
+    <circle cx="0" cy="0" r="2" fill="#E6F5FF"/>
+  </g>
+
+  <!-- 海浪 -->
+  <g class="ocean">
+    <path class="wave wave-back" d="M 0 132 Q 17 122 34 132 T 68 132 T 102 132 T 136 132 T 170 132 T 200 132" stroke="url(#lhc-wave)" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.55"/>
+    <path class="wave wave-front" d="M 0 144 Q 17 134 34 144 T 68 144 T 102 144 T 136 144 T 170 144 T 200 144" stroke="url(#lhc-wave)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

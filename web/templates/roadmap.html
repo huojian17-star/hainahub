@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>转行路线图 - 海纳英才</title>
+<link rel="stylesheet" href="/static/css/news.css">
+<link rel="stylesheet" href="/static/css/roadmap.css">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body>
+<div class="ocean-bg"></div>
+
+<header class="topbar">
+  <a class="back" href="/content">← 首页</a>
+  <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+    <span class="logo-mark">{% include "_logo_white.html" %}</span>
+    <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+  </a>
+  <span class="topbar-section">转行路线图</span>
+  <span class="top-spacer"></span>
+</header>
+
+<main class="rm-app" id="rmApp">
+  <!-- 交互式关系网络 -->
+  <section class="rm-map">
+    <svg id="rmSvg" width="100%" height="100%"></svg>
+  </section>
+
+  <!-- 右侧详情卡片 -->
+  <div class="rm-page" id="rmPage">
+    <div class="rm-card" id="rmCard">
+      <!-- 由 JS 渲染 -->
+    </div>
+  </div>
+
+  <!-- 图例 -->
+  <div class="rm-legend">
+    <span><i class="lg lg-tri"></i> 工科能转</span>
+    <span><i class="lg lg-sq"></i> 理科能转</span>
+    <span><i class="lg lg-dot"></i> 留在海洋</span>
+    <span class="rm-legend-hint">点节点看这条路怎么走</span>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var svg = document.getElementById("rmSvg");
+  var card = document.getElementById("rmCard");
+  var app = document.getElementById("rmApp");
+
+  // ===== 数据：中心 + 6 条转行路径 =====
+  // shape: triangle=工科转 / square=理科转 / circle=留海洋；home 是中心
+  var nodes = [
+    { id: "home", label: "你", sub: "海洋专业", x: 0.44, y: 0.5, shape: "hex", size: 22, type: "home", content: "home" },
+
+    { id: "ic", label: "电子 / 半导体", x: 0.63, y: 0.30, shape: "triangle", size: 13, type: "工科转", num: "1", content: "ic" },
+    { id: "data", label: "数据 / AI", x: 0.68, y: 0.52, shape: "square", size: 12, type: "理科转", num: "2", content: "data" },
+    { id: "gis", label: "遥感 / GIS", x: 0.63, y: 0.70, shape: "square", size: 12, type: "理科转", num: "3", content: "gis" },
+    { id: "env", label: "环境 / 环评", x: 0.27, y: 0.70, shape: "square", size: 12, type: "理科转", num: "4", content: "env" },
+    { id: "sim", label: "数值模拟", x: 0.15, y: 0.52, shape: "circle", size: 12, type: "留海洋", num: "5", content: "sim" },
+    { id: "sea", label: "出海 / 科考", x: 0.27, y: 0.30, shape: "circle", size: 12, type: "留海洋", num: "6", content: "sea" },
+  ];
+
+  var links = [
+    ["home", "ic"], ["home", "data"], ["home", "gis"], ["home", "env"], ["home", "sim"], ["home", "sea"],
+  ];
+
+  // 每条路径的详情卡片
+  var contents = {
+    home: {
+      title: "海洋专业，能往哪走",
+      html:
+        '<p class="rm-tab-desc">从中心出发，每条线是一条可走的路。▲工科能转　■理科能转　●留在海洋。</p>' +
+        '<p class="rm-tab-desc">点一个节点，看那条路要补什么、能投什么岗、真实薪资多少。</p>'
+    },
+    ic: {
+      title: "电子 / 半导体",
+      type: "▲ 工科能转",
+      html:
+        '<p class="rm-tab-desc">水声、船舶这类工科背景，能直接往电子、半导体转。</p>' +
+        '<ul class="rm-list">' +
+        '<li><b>要补</b><span>数字电路、芯片设计工具、C/C++</span></li>' +
+        '<li><b>能投</b><span>华为、小米、紫光展锐、迈瑞、歌尔</span></li>' +
+        '<li><b>依据</b><span>哈工程水声工程学院 2023 届硕士去向</span></li>' +
+        '</ul>'
+    },
+    data: {
+      title: "数据 / AI",
+      type: "■ 理科能转",
+      html:
+        '<p class="rm-tab-desc">会 Python + netCDF 数据处理，补点机器学习和 SQL 就能投。</p>' +
+        '<ul class="rm-list">' +
+        '<li><b>要补</b><span>机器学习、SQL、pandas</span></li>' +
+        '<li><b>能投</b><span>气象数据处理、海洋数据工程师</span></li>' +
+        '<li><b>薪资</b><span>12–25K（天序智能招聘原文）</span></li>' +
+        '</ul>'
+    },
+    gis: {
+      title: "遥感 / GIS",
+      type: "■ 理科能转",
+      html:
+        '<p class="rm-tab-desc">海洋数据 + 空间分析，补 GIS 工具链就能转开发岗。</p>' +
+        '<ul class="rm-list">' +
+        '<li><b>要补</b><span>ArcGIS / QGIS、遥感图像处理、WebGIS</span></li>' +
+        '<li><b>能投</b><span>GIS 开发、遥感解译、测绘</span></li>' +
+        '<li><b>薪资</b><span>测绘应届 9.2K（职友集）</span></li>' +
+        '</ul>'
+    },
+    env: {
+      title: "环境 / 环评",
+      type: "■ 理科能转",
+      html:
+        '<p class="rm-tab-desc">海洋环境知识迁移到环评，考环境影响评价工程师。</p>' +
+        '<ul class="rm-list">' +
+        '<li><b>要补</b><span>环评导则、水处理、环境法规</span></li>' +
+        '<li><b>能投</b><span>环评机构、环保咨询</span></li>' +
+        '<li><b>薪资</b><span>环评工程师 12.8K（职友集）</span></li>' +
+        '</ul>'
+    },
+    sim: {
+      title: "数值模拟",
+      type: "● 留在海洋",
+      html:
+        '<p class="rm-tab-desc">海洋人最容易直接对口的技能，基本不用补。</p>' +
+        '<ul class="rm-list">' +
+        '<li><b>要补</b><span>FVCOM / MIKE / Delft3D / ROMS</span></li>' +
+        '<li><b>能投</b><span>海洋数值模拟工程师</span></li>' +
+        '<li><b>薪资</b><span>本科年 12 万+（招聘原文）</span></li>' +
+        '</ul>'
+    },
+    sea: {
+      title: "出海 / 科考",
+      type: "● 留在海洋",
+      html:
+        '<p class="rm-tab-desc">本科直接能走的路，科考船需要一整支海上技术队伍。</p>' +
+        '<ul class="rm-list">' +
+        '<li><b>要补</b><span>船员证 / 海上经历</span></li>' +
+        '<li><b>能投</b><span>科考船技术岗、远洋船员</span></li>' +
+        '<li><b>依据</b><span>同济「同济」号、厦大「嘉庚」号招聘</span></li>' +
+        '</ul>'
+    },
+  };
+
+  // ===== 渲染 =====
+  var ns = "http://www.w3.org/2000/svg";
+  var nodeMap = {};
+  nodes.forEach(function (n) { nodeMap[n.id] = n; });
+
+  function x(n) { return n.x * svg.clientWidth; }
+  function y(n) { return n.y * svg.clientHeight; }
+
+  function createShape(n) {
+    var s;
+    if (n.shape === "circle") {
+      s = document.createElementNS(ns, "circle");
+      s.setAttribute("r", n.size);
+    } else if (n.shape === "square") {
+      s = document.createElementNS(ns, "rect");
+      s.setAttribute("x", -n.size); s.setAttribute("y", -n.size);
+      s.setAttribute("width", n.size * 2); s.setAttribute("height", n.size * 2);
+    } else if (n.shape === "triangle") {
+      s = document.createElementNS(ns, "polygon");
+      var h = n.size * 1.2;
+      s.setAttribute("points", "0," + (-h) + " " + n.size + "," + (h * 0.6) + " " + (-n.size) + "," + (h * 0.6));
+    } else if (n.shape === "hex") {
+      s = document.createElementNS(ns, "polygon");
+      var pts = [];
+      for (var i = 0; i < 6; i++) {
+        var a = (Math.PI / 3) * i - Math.PI / 6;
+        pts.push((n.size * Math.cos(a)).toFixed(1) + "," + (n.size * Math.sin(a)).toFixed(1));
+      }
+      s.setAttribute("points", pts.join(" "));
+    } else {
+      s = document.createElementNS(ns, "circle");
+      s.setAttribute("r", n.size);
+    }
+    s.setAttribute("class", "rm-shape");
+    return s;
+  }
+
+  function render() {
+    svg.innerHTML = "";
+    links.forEach(function (pair) {
+      var a = nodeMap[pair[0]], b = nodeMap[pair[1]];
+      if (!a || !b) return;
+      var line = document.createElementNS(ns, "line");
+      line.setAttribute("x1", x(a)); line.setAttribute("y1", y(a));
+      line.setAttribute("x2", x(b)); line.setAttribute("y2", y(b));
+      line.setAttribute("class", "rm-link");
+      svg.appendChild(line);
+    });
+    nodes.forEach(function (n) {
+      var g = document.createElementNS(ns, "g");
+      g.setAttribute("class", "rm-node");
+      g.setAttribute("data-id", n.id);
+      g.setAttribute("data-type", n.type);
+      g.setAttribute("data-state", "idle");
+      g.setAttribute("transform", "translate(" + x(n) + "," + y(n) + ")");
+      g.setAttribute("tabindex", "0");
+      g.setAttribute("role", "button");
+      g.setAttribute("aria-label", n.label);
+
+      g.appendChild(createShape(n));
+
+      if (n.num) {
+        var num = document.createElementNS(ns, "text");
+        num.setAttribute("class", "rm-label");
+        num.setAttribute("text-anchor", "middle");
+        num.setAttribute("dy", "0.35em");
+        num.setAttribute("fill", "#0A2540");
+        num.textContent = n.num;
+        g.appendChild(num);
+      }
+
+      var label = document.createElementNS(ns, "text");
+      label.setAttribute("class", "rm-label");
+      label.setAttribute("text-anchor", "middle");
+      var labelY = n.shape === "triangle" ? n.size * 1.9 + 8 : n.size + 14;
+      label.setAttribute("dy", labelY);
+      label.textContent = n.label;
+      g.appendChild(label);
+
+      if (n.sub) {
+        var sub = document.createElementNS(ns, "text");
+        sub.setAttribute("class", "rm-label rm-sub");
+        sub.setAttribute("text-anchor", "middle");
+        sub.setAttribute("dy", labelY + 14);
+        sub.textContent = n.sub;
+        g.appendChild(sub);
+      }
+
+      svg.appendChild(g);
+    });
+  }
+
+  // ===== 详情卡片 =====
+  function setCard(key) {
+    var c = contents[key] || contents.home;
+    card.innerHTML =
+      '<h2 class="rm-card-title">' + c.title + '</h2>' +
+      (c.type ? '<span class="rm-card-type">' + c.type + '</span>' : '') +
+      '<div class="rm-card-body">' + c.html + '</div>';
+  }
+
+  function activateNode(id) {
+    var n = nodeMap[id];
+    if (!n) return;
+    document.querySelectorAll(".rm-node").forEach(function (g) {
+      g.setAttribute("data-state", g.getAttribute("data-id") === id ? "active" : "muted");
+    });
+    setCard(n.content);
+  }
+
+  // ===== 初始化 =====
+  render();
+  activateNode("home");
+
+  document.addEventListener("click", function (e) {
+    var g = e.target.closest(".rm-node");
+    if (g) activateNode(g.getAttribute("data-id"));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var g = e.target.closest(".rm-node");
+    if (g) { e.preventDefault(); activateNode(g.getAttribute("data-id")); }
+  });
+  window.addEventListener("resize", render);
+})();
+</script>
+{% include "_feedback.html" %}
+</body>
+</html>

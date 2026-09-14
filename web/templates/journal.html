@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ j.name }} - 期刊分级 · 海纳英才</title>
+<link rel="stylesheet" href="/static/css/style.css?v=20260905">
+<link rel="stylesheet" href="/static/css/logo.css">
+<link rel="stylesheet" href="/static/css/enhance.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+{% include "_analytics.html" %}
+</head>
+<body class="journal-page">
+<div class="ocean-bg" id="oceanBg"></div>
+
+<main class="wrap journal-wrap">
+  <header class="article-head">
+    <a class="back" href="/content#journals">← 返回期刊分级</a>
+    <a class="brand-logo topbar-brand" href="/" aria-label="海纳英才首页">
+      <span class="logo-mark">{% include "_logo_white.html" %}</span>
+      <span class="logo-text">海纳英才<span class="logo-en">Haina</span></span>
+    </a>
+  </header>
+
+  <div class="journal-hero">
+    <div class="journal-logo-box">
+      {% if j.cover %}
+      <img class="journal-logo" src="/static/img/journal/{{ j.cover }}" alt="{{ j.name }}" onerror="this.parentNode.classList.add('noimg');this.remove();">
+      {% else %}
+      <img class="journal-logo" src="/static/img/journal/{{ j.id }}.png" alt="{{ j.name }}" onerror="this.parentNode.classList.add('noimg');this.remove();">
+      {% endif %}
+      <span class="journal-logo-fallback">{{ j.name[0] }}</span>
+    </div>
+    <div class="journal-hero-info">
+      <h1 class="journal-title">{{ j.name }}</h1>
+      {% if j.abbr %}<p class="journal-abbr">{{ j.abbr }}</p>{% endif %}
+      <div class="journal-badges">
+        <span class="journal-badge zone-{{ 'q1' if j.cas_zone.startswith('1') else 'q2' }}">{{ j.cas_zone }}</span>
+        <span class="journal-badge if-badge">IF {{ j.if }}</span>
+        <span class="journal-badge field-badge">{{ j.field }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="journal-cards">
+    <div class="journal-card">
+      <div class="jc-label">研究方向</div>
+      <div class="jc-value">{{ j.field }}</div>
+    </div>
+    <div class="journal-card">
+      <div class="jc-label">审稿周期</div>
+      <div class="jc-value">{{ j.review_cycle }}</div>
+    </div>
+    <div class="journal-card">
+      <div class="jc-label">出版社</div>
+      <div class="jc-value">{{ j.publisher }}</div>
+    </div>
+    {% if j.note %}
+    <div class="journal-card journal-card-wide">
+      <div class="jc-label">备注</div>
+      <div class="jc-value">{{ j.note }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="journal-actions">
+    {% if j.url %}<a class="btn-origin" href="{{ j.url }}" target="_blank" rel="noopener">访问期刊官网 →</a>{% endif %}
+  </div>
+
+  <p class="journal-disclaimer">数据仍在收集中，分区以官方最新发布为准。</p>
+</main>
+
+{% include "_feedback.html" %}
+</body>
+</html>

@@ -1,0 +1,36 @@
+/* 搜索页 */
+.search-wrap { max-width: 820px; margin: 0 auto; padding: 60px 20px 80px; }
+.search-box { margin-bottom: 28px; }
+.search-box input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+.search-box input::placeholder { color: rgba(255, 255, 255, 0.55); }
+.search-box input:focus { border-color: #2FD4DA; }
+
+.result-group { margin-bottom: 28px; }
+.result-group-title {
+  font-size: 14px;
+  color: #2FD4DA;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #2FD4DA;
+}
+.result-item {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.result-item:last-child { border-bottom: none; }
+.result-title { font-size: 15px; color: #fff; text-decoration: none; font-weight: 600; }
+.result-title:hover { text-decoration: underline; }
+.result-meta { font-size: 12px; color: rgba(255, 255, 255, 0.5); margin-top: 4px; }
+
+.search-empty { text-align: center; color: rgba(255, 255, 255, 0.5); padding: 60px 0; }
+.search-hint { text-align: center; color: rgba(255, 255, 255, 0.55); padding: 40px 0; font-size: 14px; }
