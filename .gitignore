@@ -1,0 +1,15 @@
+.env
+*.db
+*.db-journal
+*.sqlite3
+*.pem
+*.key
+__pycache__/
+*.pyc
+*.log
+web/static/models/
+web/static/uploads/
+web/static/export/
+web/data/
+*.bak*
+.DS_Store
